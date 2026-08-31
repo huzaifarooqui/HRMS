@@ -1,0 +1,5 @@
+GRSJ HRMS Allocation V4.9
+- Fixed Admin DRR detection for all three Performance PivotTables.
+- Cause: Pivot 2 and Pivot 3 do not place their header at the same relative row as assumed previously.
+- Reader now detects the adjacent virtual DRR header across the Pivot header area.
+- Display order, Pivot labels, Manager merge, Total/Grand Total and alignment are unchanged.

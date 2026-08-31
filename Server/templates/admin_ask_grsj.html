@@ -1,0 +1,6 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}INTERNAL HR ASSISTANT{% endblock %}{% block heading %}Ask GRSJ AI{% endblock %}
+{% block content %}
+<section class="hero"><div><p class="eyebrow">PRIVATE WORKSPACE</p><h2>Ask your HRMS a question.</h2><p class="muted">Searches live HRMS data. Examples: “Who was late most this month?”, “Which documents expire?”, “Show pending approvals”.</p></div></section>
+<section class="panel"><form class="assistant-form" method="get"><input name="q" value="{{q}}" placeholder="Ask about employees, attendance, documents, approvals…" autofocus><button class="btn primary">Ask GRSJ AI</button></form>{% if answer %}<div class="assistant-answer"><b>{{answer}}</b>{% if data %}<div class="table-wrap"><table><thead><tr>{% for k in data[0].keys() %}<th>{{k|replace('_',' ')}}</th>{% endfor %}</tr></thead><tbody>{% for r in data %}<tr>{% for v in r.values() %}<td>{{v}}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div>{% else %}<p class="empty">No matching records found.</p>{% endif %}</div>{% endif %}</section>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}DIGILOCKER VERIFICATION{% endblock %}
+{% block heading %}Select verified documents{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="eyebrow">CONSENTED DIGILOCKER DOCUMENTS</p>
+      <h3>{{flow.first_name}} {{flow.last_name or ''}}</h3>
+    </div>
+  </div>
+  <div class="digilocker-note verified">
+    <b>🔐 Secure verification session</b>
+    <span>Only documents returned by DigiLocker after the user's consent are shown here. Choose a document to save a verified copy in HRMS.</span>
+  </div>
+  <div class="document-list">
+    {% for d in documents %}
+      <div class="document-row">
+        <span>✓</span>
+        <div>
+          <b>{{d.name or d.description or 'DigiLocker Document'}}</b>
+          <small>{{d.doctype or d.issuer or d.uri or 'Issued document'}}</small>
+        </div>
+        <form method="post" action="{{url_for('digilocker_import',flow_id=flow.id)}}">
+          <input type="hidden" name="doc_index" value="{{loop.index0}}">
+          <button class="btn primary" type="submit">Save Verified</button>
+        </form>
+      </div>
+    {% else %}
+      <p class="empty">No issued documents were returned by DigiLocker for this consent session.</p>
+    {% endfor %}
+  </div>
+  <form method="post" action="{{url_for('digilocker_finish',flow_id=flow.id)}}" style="margin-top:18px">
+    <button class="btn secondary" type="submit">Done & Close DigiLocker Session</button>
+  </form>
+</section>
+{% endblock %}

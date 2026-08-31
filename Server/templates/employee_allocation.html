@@ -1,0 +1,55 @@
+{% extends 'base_employee.html' %}
+{% block title %}Allocation · GRSJ HRMS{% endblock %}
+{% block content %}
+<header class="employee-head allocation-head">
+  <div><p class="eyebrow">MY PERFORMANCE</p><h1>Performance Tracking</h1>
+  <p>Your latest Performance Pivot synced automatically from the approved Koofr workbook.</p></div>
+  <form method="post" action="{{url_for('employee_allocation_refresh')}}" class="performance-refresh-form">
+    <button class="btn ghost" type="submit" onclick="this.disabled=true;this.innerHTML='↻ Refreshing...';this.form.submit();">↻ Refresh</button>
+  </form>
+</header>
+{% if snapshot %}
+<section class="allocation-status">
+  <div><small>SYNC STATUS</small><b><span class="sync-dot"></span> Up to date</b></div>
+  <div><small>LAST UPDATED</small><b>{{snapshot.imported_at.strftime('%d %b %Y, %I:%M %p') if snapshot.imported_at else '—'}}</b></div>
+  <div><small>SOURCE</small><b>{{snapshot.source_file}}</b></div>
+</section>
+<section class="panel allocation-panel">
+  <div class="panel-head"><div><p class="eyebrow">PERFORMANCE</p><h3>Current Pivot</h3></div>
+  <small class="allocation-note">Read-only · Workable sheet is never imported</small></div>
+  <div class="table-wrap allocation-table-wrap">
+    <table class="allocation-table">
+      <thead><tr>{% for h in headers %}<th>{{h}}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for item in display_rows %}
+        {% set row = item.cells %}
+        {% if item.is_total %}
+          <tr class="allocation-total-row">
+            <td colspan="2" class="allocation-total-label">Total</td>
+            {% for cell in row[2:] %}
+              <td>{{cell if cell not in [None,''] else '—'}}</td>
+            {% endfor %}
+          </tr>
+        {% else %}
+          <tr>
+            {% if item.show_ro %}
+              <td rowspan="{{item.ro_rowspan}}" class="allocation-manager-cell">{{row[0]}}</td>
+            {% endif %}
+            <td>{{row[1] if row|length > 1 and row[1] not in [None,''] else '—'}}</td>
+            {% for cell in row[2:] %}
+              <td>{{cell if cell not in [None,''] else '—'}}</td>
+            {% endfor %}
+          </tr>
+        {% endif %}
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% else %}
+<section class="panel allocation-empty"><div class="empty-state-icon">▦</div>
+<h2>Performance is syncing</h2>
+<p>No Performance Pivot snapshot is available yet. The background sync will publish it automatically after the approved Koofr file is detected.</p>
+</section>
+{% endif %}
+{% endblock %}

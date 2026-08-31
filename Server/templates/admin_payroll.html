@@ -1,0 +1,6 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}SALARY OPERATIONS{% endblock %}{% block heading %}Payroll Ledger{% endblock %}
+{% block content %}
+<section class="toolbar"><form method="get"><input type="month" name="month" value="{{month}}"><button class="btn secondary">View</button></form><form method="post" action="{{url_for('admin_payroll_generate')}}"><input type="hidden" name="month" value="{{month}}"><button class="btn primary">Generate Payroll</button></form></section>
+<section class="panel"><div class="panel-head"><div><p class="eyebrow">{{month}}</p><h3>Payroll snapshot</h3></div><small>Attendance-based salary · no overtime</small></div><div class="table-wrap"><table><thead><tr><th>Employee</th><th>Present</th><th>Late</th><th>Half Day</th><th>Absent</th><th>Final Days</th><th>Gross</th><th>Net</th><th>Status</th></tr></thead><tbody>{% for r in rows %}<tr><td><b>{{r.employee_name}}</b><small class="block">{{r.login_id}}</small></td><td>{{r.present_days}}</td><td>{{r.late_days}}</td><td>{{r.half_days}}</td><td>{{r.absent_days}}</td><td>{{r.final_days}}</td><td>₹{{'{:,.2f}'.format(r.gross_salary or 0)}}</td><td><b>₹{{'{:,.2f}'.format(r.net_salary or 0)}}</b></td><td>{{r.status}}</td></tr>{% else %}<tr><td colspan="9" class="empty">No payroll ledger generated for this month.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

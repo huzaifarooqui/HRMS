@@ -1,0 +1,5 @@
+Allocation V4.3
+- Prevents new duplicate history rows when the visible Performance allocation has not changed.
+- RO/Manager name is vertically merged across all of that manager's State rows.
+- Final grand total row merges the RO + State cells and displays Total.
+- Existing older duplicate snapshot history is preserved; Employee portal continues to use latest only.

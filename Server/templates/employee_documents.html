@@ -1,0 +1,22 @@
+{% extends 'base_employee.html' %}
+{% block content %}
+<header class="employee-head"><div><p class="eyebrow">EMPLOYEE RECORDS</p><h1>Documents</h1><p>View documents issued or uploaded by HR/Admin.</p></div></header>
+<section class="panel"><div class="document-list">
+{% for d in documents %}
+<article class="document-row document-lifecycle-card">
+  <span>📄</span>
+  <div>
+    <b>{{d.title}}</b>
+    <small>{{d.document_type}} · {{d.verification_status or 'Uploaded'}} · {{d.lifecycle_status or 'Active'}}</small>
+    <small>{% if d.document_number %}{{d.document_number}} · {% endif %}Issued {{d.issue_date or d.uploaded_at.strftime('%d %b %Y')}}{% if d.expiry_date %} · Expires {{d.expiry_date}}{% endif %}</small>
+  </div>
+  <div class="document-actions">
+    <a class="btn ghost small" href="{{url_for('document_uploaded',name=d.file_name)}}" target="_blank">Open ↗</a>
+    {% if not d.acknowledged_at and d.document_type in ['Offer Letter','Appointment Letter','Warning Letter','Performance Improvement Plan (PIP)','Promotion Letter','Termination Letter','Pay Slip','Relieving Letter'] %}
+    <form method="post" action="{{url_for('employee_document_acknowledge',did=d.id)}}"><button class="btn secondary small">Acknowledge</button></form>
+    {% elif d.acknowledged_at %}<small class="acknowledged">✓ Acknowledged {{d.acknowledged_at.strftime('%d %b %Y')}}</small>{% endif %}
+  </div>
+</article>
+{% else %}<p class="empty">No documents have been uploaded for your profile.</p>{% endfor %}
+</div></section>
+{% endblock %}

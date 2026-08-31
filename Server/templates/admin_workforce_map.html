@@ -1,0 +1,12 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}LIVE ATTENDANCE INTELLIGENCE{% endblock %}{% block heading %}Workforce Map{% endblock %}
+{% block content %}
+<section class="hero"><div><p class="eyebrow">TODAY · {{today.strftime('%d %b %Y')}}</p><h2>Attendance locations at a glance.</h2><p class="muted">Only employees with a verified check-in coordinate today are shown. This is a management view, not a permanent location tracker.</p></div><span class="date-chip">{{points|length}} plotted</span></section>
+<section class="panel"><div id="workforceMap" style="height:560px;border-radius:14px;overflow:hidden;background:#eef2f7"></div>{% if not points %}<div class="empty-state" style="margin-top:12px">No GPS attendance coordinates are available for today.</div>{% endif %}</section>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script>
+const points={{points|tojson}}; const map=L.map('workforceMap').setView([28.6139,77.2090],12); L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+const bounds=[]; points.forEach(p=>{const m=L.marker([p.lat,p.lng]).addTo(map);m.bindPopup('<b>'+String(p.name).replace(/</g,'&lt;')+'</b><br>'+String(p.designation).replace(/</g,'&lt;')+'<br>Status: '+String(p.status).replace(/</g,'&lt;')+'<br>Check-in: '+String(p.check_in).replace(/</g,'&lt;'));bounds.push([p.lat,p.lng]);}); if(bounds.length)map.fitBounds(bounds,{padding:[30,30]});
+</script>
+{% endblock %}

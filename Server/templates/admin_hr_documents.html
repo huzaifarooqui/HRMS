@@ -1,0 +1,316 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}EMPLOYEE DOCUMENTS{% endblock %}
+
+{% block heading %}Documents{% endblock %}
+{% block content %}
+
+<section class="panel hr-doc-generator">
+  <div class="panel-head">
+    <div><p class="eyebrow">DOCUMENT GENERATOR</p><h3>Create Employee Document</h3></div>
+    <small>{% if selected_type in ['Offer Letter','Appointment Letter','Termination Letter','Promotion Letter','Pay Slip','Experience Letter','Warning Letter','Performance Improvement Plan (PIP)','Relieving Letter'] %}Official GRSJ letterhead template enabled{% else %}Choose a document type and employee{% endif %}</small>
+  </div>
+  <form method="post" class="form-grid document-generator-form" id="hrDocumentForm">
+    <label>Document Type
+      <select name="document_type" required onchange="reloadGenerator()">
+        <option value="">Select document</option>
+        {% for d in document_types %}<option value="{{d}}" {{'selected' if selected_type==d else ''}}>{{d}}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Employee
+      <select name="employee_id" required onchange="reloadGenerator()">
+        <option value="">Select employee</option>
+        {% for e in employees %}<option value="{{e.id}}" {{'selected' if selected_employee and selected_employee.id==e.id else ''}}>{{e.first_name}} {{e.last_name or ''}} · {{e.login_id}}{% if e.status and e.status != 'Active' %} · {{e.status}}{% endif %}</option>{% endfor %}
+      </select>
+    </label>
+
+    {% if selected_employee %}
+    <div class="full-span selected-employee-card offer-employee-card">
+      <div><span class="mini-label">SELECTED EMPLOYEE</span><b>{{selected_employee.first_name}} {{selected_employee.last_name or ''}}</b></div>
+      <span>{{selected_employee.designation or 'Employee'}} · {{selected_employee.login_id}}</span>
+      <span>{{selected_employee.department_name or selected_employee.department or 'No Department'}} · Joined {{selected_employee.joining_date.strftime('%d %b %Y') if selected_employee.joining_date else '—'}}</span>
+    </div>
+    {% endif %}
+
+    {% if selected_type=='Offer Letter' and selected_employee %}
+      <div class="full-span offer-section-title"><div><span>01</span><b>Offer Details</b></div><small>Database values are pre-filled and can be adjusted before issue.</small></div>
+      <label>Offer Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Auto-generated if left blank"></label>
+      <label>Designation<input name="designation" value="{{selected_employee.designation or ''}}" required></label>
+      <label>Department<input name="department" value="{{selected_employee.department_name or selected_employee.department or ''}}" required></label>
+      <label>Date of Joining<input type="date" name="joining_date" value="{{selected_employee.joining_date.isoformat() if selected_employee.joining_date else ''}}" required></label>
+      <label>Monthly Gross Salary (₹)<input type="number" name="monthly_salary" min="0" step="1" value="{{selected_employee.salary or ''}}" required></label>
+      <label>Probation Period (Months)<input type="number" name="probation_months" min="0" max="24" value="3" required></label>
+      <label>Offer Acceptance By<input type="date" name="acceptance_date" value="{{default_acceptance}}" required></label>
+      <label class="full-span">Work Location<input name="work_location" value="{{company.company_address or 'Property No 8, Kh No 108, Mayur Vihar Phase 1, Harijan Basti Jagat Colony, Chilla Saroda Bangar, New Delhi - 110091'}}" required></label>
+      <label class="full-span">Reporting To / Senior Name<input name="reporting_to" value="" placeholder="Enter individual senior's full name" required></label>
+      <label class="full-span">Additional Terms / Special Instructions <span class="optional">Optional</span><textarea name="additional_terms" rows="3" placeholder="Only add employee-specific terms here. Standard professional clauses are already included in the letter."></textarea></label>
+      <div class="full-span offer-preview-note"><b>Offer Letter includes:</b> position summary, Annexure - I salary breakup, probation, working/attendance conduct, confidentiality, document verification, company policies, separation terms and employee acceptance/signature area.</div>
+      <div class="form-actions full-span offer-actions">
+        <button class="btn secondary" type="submit" name="action" value="preview" formtarget="_blank">Preview PDF</button>
+        <button class="btn primary" type="submit" name="action" value="issue">Generate & Issue</button>
+      </div>
+    {% elif selected_type=='Appointment Letter' and selected_employee %}
+      <div class="full-span offer-section-title"><div><span>02</span><b>Appointment Details</b></div><small>Employee records are pre-filled and can be adjusted before issue.</small></div>
+      <label>Appointment Letter Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Auto-generated if left blank"></label>
+      <label>Designation<input name="designation" value="{{selected_employee.designation or ''}}" required></label>
+      <label>Department<input name="department" value="{{selected_employee.department_name or selected_employee.department or ''}}" required></label>
+      <label>Date of Joining<input type="date" name="joining_date" value="{{selected_employee.joining_date.isoformat() if selected_employee.joining_date else ''}}" required></label>
+      <label>Appointment Effective From<input type="date" name="effective_date" value="{{selected_employee.joining_date.isoformat() if selected_employee.joining_date else today.isoformat()}}" required></label>
+      <label>Probation Period (Months)<input type="number" name="probation_months" min="0" max="24" value="3" required></label>
+      <label>Reporting To / Senior Name<input name="reporting_to" value="" placeholder="Enter individual senior's full name" required></label>
+      <label class="full-span">Place of Posting / Work Location<input name="work_location" value="{{company.company_address or 'Property No 8, Kh No 108, Mayur Vihar Phase 1, Harijan Basti Jagat Colony, Chilla Saroda Bangar, New Delhi - 110091'}}" required></label>
+      <label class="full-span">Additional Appointment Terms <span class="optional">Optional</span><textarea name="additional_terms" rows="3" placeholder="Only add employee-specific terms here. Standard appointment clauses are already included."></textarea></label>
+      <div class="full-span offer-preview-note"><b>Appointment Letter includes:</b> formal appointment, role & reporting, probation, duties, attendance, confidentiality, company assets, conduct, document accuracy, conflict of interest, company policies, separation and acceptance/signatures.</div>
+      <div class="form-actions full-span offer-actions">
+        <button class="btn secondary" type="submit" name="action" value="preview" formtarget="_blank">Preview PDF</button>
+        <button class="btn primary" type="submit" name="action" value="issue">Generate & Issue</button>
+      </div>
+    {% elif selected_type=='Termination Letter' and selected_employee %}
+      <div class="full-span offer-section-title"><div><span>02</span><b>Termination Details</b></div><small>Review carefully before generating this formal separation document.</small></div>
+      <label>Letter Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Auto-generated if left blank"></label>
+      <label>Termination Effective Date<input type="date" name="effective_date" value="{{today.isoformat()}}" required></label>
+      <label>Last Working Day<input type="date" name="last_working_date" value="{{today.isoformat()}}" required></label>
+      <label>Termination Category<select name="termination_category" required><option>Company Initiated</option><option>Performance / Conduct</option><option>Unauthorised Absence</option><option>Policy Violation</option><option>Probation Discontinuation</option><option>Other</option></select></label>
+      <label class="full-span">Reason for Termination<textarea name="termination_reason" rows="4" placeholder="Enter the factual, approved reason for termination" required></textarea></label>
+      <label class="full-span">Company Assets / Handover Instructions<textarea name="asset_instructions" rows="3">Return all company property, records, credentials and assets in your possession on or before the last working day.</textarea></label>
+      <label class="full-span">Full & Final Settlement Instructions<textarea name="fnf_details" rows="3">In accordance with the company's applicable policies and the law, the 'Full and Final settlement' process will be completed only after the necessary clearances have been obtained and a period of 45 days has elapsed.</textarea></label>
+      <label class="full-span">Additional Information <span class="optional">Optional</span><textarea name="additional_terms" rows="3" placeholder="Add only case-specific approved information here."></textarea></label>
+      <div class="full-span offer-preview-note"><b>Termination Letter includes:</b> effective date, factual reason, handover & assets, F&F, confidentiality, access/clearance, separation documents and acknowledgement/signatures.</div>
+      <div class="form-actions full-span offer-actions">
+        <button class="btn secondary" type="submit" name="action" value="preview" formtarget="_blank">Preview PDF</button>
+        <button class="btn primary" type="submit" name="action" value="issue">Generate & Issue</button>
+      </div>
+    {% elif selected_type=='Promotion Letter' and selected_employee %}
+      <div class="full-span offer-section-title"><div><span>02</span><b>Promotion Details</b></div><small>Review the new role and effective terms before issue.</small></div>
+      <label>Promotion Letter Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Auto-generated if left blank"></label>
+      <label>Promotion Effective Date<input type="date" name="effective_date" value="{{today.isoformat()}}" required></label>
+      <label>Reporting To / Senior Name<input name="reporting_to" placeholder="Enter individual senior's full name" required></label>
+      <label>Current Designation<input name="current_designation" value="{{selected_employee.designation or ''}}" required></label>
+      <label>New Designation<input name="new_designation" placeholder="Enter promoted designation" required></label>
+      <label>Current Department<input name="current_department" value="{{selected_employee.department_name or selected_employee.department or ''}}" required></label>
+      <label>New Department<input name="new_department" value="{{selected_employee.department_name or selected_employee.department or ''}}" required></label>
+      <label>Salary Revision<select name="salary_revision_applicable" id="promotionSalaryRevision"><option value="No">No</option><option value="Yes">Yes</option></select></label>
+      <label>Revised Monthly Salary <span class="optional">If applicable</span><input type="number" name="revised_salary" min="0" step="0.01" placeholder="Enter revised monthly salary"></label>
+      <label class="full-span">Revised Responsibilities<textarea name="revised_responsibilities" rows="4" placeholder="Describe the key responsibilities of the promoted role"></textarea></label>
+      <label class="full-span">Additional Terms <span class="optional">Optional</span><textarea name="additional_terms" rows="3" placeholder="Add only promotion-specific approved terms here."></textarea></label>
+      <div class="full-span offer-preview-note"><b>Promotion Letter includes:</b> current → new designation, department, effective date, reporting senior, compensation revision (if applicable), enhanced responsibilities, expectations and continuity of employment terms.</div>
+      <div class="form-actions full-span offer-actions">
+        <button class="btn secondary" type="submit" name="action" value="preview" formtarget="_blank">Preview PDF</button>
+        <button class="btn primary" type="submit" name="action" value="issue">Generate & Issue</button>
+      </div>
+    {% elif selected_type=='Pay Slip' and selected_employee %}
+      <div class="full-span offer-section-title"><div><span>05</span><b>Pay Slip Details</b></div><small>Attendance and monthly salary are calculated from the existing HRMS payroll rules.</small></div>
+      <label>Salary Month<input type="month" name="salary_month" value="{{today.strftime('%Y-%m')}}" required></label>
+      <label>Pay Slip Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Auto-generated if left blank"></label>
+      <label>Monthly Gross Salary (₹)<input type="number" value="{{selected_employee.salary or 0}}" readonly></label>
+      <label>Incentive (₹) <span class="optional">Optional</span><input type="number" name="incentive" min="0" step="0.01" value="0"></label>
+      <label>Other Deductions (₹) <span class="optional">Optional</span><input type="number" name="other_deductions" min="0" step="0.01" value="0"></label>
+      <label class="full-span">Remarks <span class="optional">Optional</span><textarea name="remarks" rows="3" placeholder="Add payroll remarks only if required."></textarea></label>
+      <div class="full-span offer-preview-note"><b>Automatic calculation:</b> Present, Late, Half Day, Absent/Leave, Holiday Credit, Payable Days and attendance-based salary deduction use the same rules as Admin Reports. Incentive and other deductions can be added manually before issue.</div>
+      <div class="form-actions full-span offer-actions">
+        <button class="btn secondary" type="submit" name="action" value="preview" formtarget="_blank">Preview PDF</button>
+        <button class="btn primary" type="submit" name="action" value="issue">Generate & Issue</button>
+      </div>
+    {% elif selected_type=='Experience Letter' and selected_employee %}
+      <div class="full-span offer-section-title"><div><span>06</span><b>Experience Letter Details</b></div><small>Suitable for completed employment; active and inactive employees are available for selection.</small></div>
+      <label>Letter Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Auto-generated if left blank"></label>
+      <label>Date of Joining<input type="date" name="joining_date" value="{{selected_employee.joining_date.isoformat() if selected_employee.joining_date else ''}}" required></label>
+      <label>Last Working Day<input type="date" name="last_working_date" value="{{today.isoformat()}}" required></label>
+      <label>Designation<input name="designation" value="{{selected_employee.designation or ''}}" required></label>
+      <label>Department<input name="department" value="{{selected_employee.department_name or selected_employee.department or ''}}" required></label>
+      <label class="full-span">Role & Responsibilities <span class="optional">Optional</span><textarea name="role_summary" rows="4" placeholder="Leave blank to use the professional standard role-summary wording."></textarea></label>
+      <label class="full-span">Performance & Conduct Remarks <span class="optional">Optional</span><textarea name="conduct_remarks" rows="3" placeholder="Leave blank to use the standard professional conduct wording."></textarea></label>
+      <label class="full-span">Additional Remarks <span class="optional">Optional</span><textarea name="additional_remarks" rows="3" placeholder="Add only approved employee-specific remarks if required."></textarea></label>
+      <div class="full-span offer-preview-note"><b>Experience Letter includes:</b> employment period, employee ID, final designation & department, role/responsibilities, professional conduct statement, appreciation and authorised signatory.</div>
+      <div class="form-actions full-span offer-actions">
+        <button class="btn secondary" type="submit" name="action" value="preview" formtarget="_blank">Preview PDF</button>
+        <button class="btn primary" type="submit" name="action" value="issue">Generate & Issue</button>
+      </div>
+    {% elif selected_type=='Performance Improvement Plan (PIP)' and selected_employee %}
+      <div class="full-span offer-section-title"><div><span>07</span><b>Performance Improvement Plan</b></div><small>Issue a structured, measurable improvement plan based on documented performance concerns.</small></div>
+      <label>PIP Issue Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Auto-generated if left blank"></label>
+      <label>PIP Period Start<input type="date" name="period_start" value="{{today.isoformat()}}" required></label>
+      <label>PIP Period End<input type="date" name="period_end" required></label>
+      <label>Review Frequency<select name="review_frequency"><option>Weekly</option><option>Fortnightly</option><option>Monthly</option></select></label>
+      <label>Final Review Date<input type="date" name="review_date" required></label>
+      <label class="full-span">Performance Concerns<textarea name="performance_concerns" rows="4" placeholder="State factual, measurable performance gaps." required></textarea></label>
+      <label class="full-span">Required Performance Standard / Expectations<textarea name="expectations" rows="4" placeholder="Define the performance level expected." required></textarea></label>
+      <label class="full-span">Improvement Actions & Measurable Deliverables<textarea name="action_plan" rows="4" placeholder="List actions, targets, milestones and expected outputs." required></textarea></label>
+      <label class="full-span">Management Support / Resources <span class="optional">Optional</span><textarea name="management_support" rows="3" placeholder="Coaching, training, tools, review support, etc."></textarea></label>
+      <label class="full-span">Consequence if Improvement is Insufficient <span class="optional">Optional</span><textarea name="consequence" rows="3" placeholder="Leave blank to use the standard wording."></textarea></label>
+      <label class="full-span">Additional Remarks <span class="optional">Optional</span><textarea name="additional_remarks" rows="3"></textarea></label>
+      <div class="full-span offer-preview-note"><b>PIP includes:</b> documented performance concerns, measurable expectations, action plan, review frequency, management support, final review date, possible further action and employee acknowledgement.</div>
+      <div class="form-actions full-span offer-actions"><button class="btn secondary" type="submit" name="action" value="preview" formtarget="_blank">Preview PDF</button><button class="btn primary" type="submit" name="action" value="issue">Generate & Issue</button></div>
+    {% elif selected_type=='Warning Letter' and selected_employee %}
+      <div class="full-span offer-section-title"><div><span>07</span><b>Warning Letter Details</b></div><small>Record factual concerns and the corrective standard expected from the employee.</small></div>
+      <label>Letter Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Auto-generated if left blank"></label>
+      <label>Warning Level<input name="warning_level" maxlength="100" placeholder="Example: First Warning / Written Warning / Final Warning" required></label>
+      <label>Incident / Review Date<input type="date" name="incident_date" value="{{today.isoformat()}}" required></label>
+      <label class="full-span">Warning Subject<input name="warning_subject" placeholder="Example: Repeated Late Reporting / Unauthorised Absence / Conduct Concern" required></label>
+      <label class="full-span">Concern / Incident Details<textarea name="incident_details" rows="4" placeholder="Enter only factual, approved details of the concern or incident." required></textarea></label>
+      <label class="full-span">Required Corrective Action<textarea name="corrective_action" rows="4" placeholder="Clearly state what improvement or corrective action is required." required></textarea></label>
+      <label>Improvement Deadline <span class="optional">Optional</span><input type="date" name="improvement_deadline"></label>
+      <label class="full-span">Further Action if Not Improved <span class="optional">Optional</span><textarea name="consequence" rows="3" placeholder="Leave blank to use the standard disciplinary-action wording."></textarea></label>
+      <label class="full-span">Additional Remarks <span class="optional">Optional</span><textarea name="additional_remarks" rows="3"></textarea></label>
+      <div class="full-span offer-preview-note"><b>Warning Letter includes:</b> warning level, factual incident, required corrective action, improvement period, possible further action, professional-conduct expectation and employee acknowledgement.</div>
+      <div class="form-actions full-span offer-actions"><button class="btn secondary" type="submit" name="action" value="preview" formtarget="_blank">Preview PDF</button><button class="btn primary" type="submit" name="action" value="issue">Generate & Issue</button></div>
+    {% elif selected_type=='Relieving Letter' and selected_employee %}
+      <div class="full-span offer-section-title"><div><span>08</span><b>Relieving Letter Details</b></div><small>Review separation and clearance details before issuing the final relieving document.</small></div>
+      <label>Letter Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Auto-generated if left blank"></label>
+      <label>Date of Joining<input type="date" name="joining_date" value="{{selected_employee.joining_date.isoformat() if selected_employee.joining_date else ''}}" required></label>
+      <label>Last Working Day<input type="date" name="last_working_date" value="{{today.isoformat()}}" required></label>
+      <label>Designation<input name="designation" value="{{selected_employee.designation or ''}}" required></label>
+      <label>Department<input name="department" value="{{selected_employee.department_name or selected_employee.department or ''}}" required></label>
+      <label>Separation Type<input name="separation_type" placeholder="Example: Resignation / Termination / Contract Completion" required></label>
+      <label>Clearance Status<input name="clearance_status" value="Completed" placeholder="Example: Completed / Pending" required></label>
+      <label class="full-span">Handover & Clearance Remarks <span class="optional">Optional</span><textarea name="handover_remarks" rows="3" placeholder="Leave blank to use standard handover/clearance wording."></textarea></label>
+      <label class="full-span">Full & Final Settlement Status <span class="optional">Optional</span><textarea name="fnf_status" rows="3" placeholder="Leave blank to use standard F&F wording."></textarea></label>
+      <label class="full-span">Additional Remarks <span class="optional">Optional</span><textarea name="additional_remarks" rows="3"></textarea></label>
+      <div class="full-span offer-preview-note"><b>Relieving Letter includes:</b> employment period, last designation & department, separation type, relieving date, handover/clearance, F&F status, continuing obligations and authorised signatory.</div>
+      <div class="form-actions full-span offer-actions"><button class="btn secondary" type="submit" name="action" value="preview" formtarget="_blank">Preview PDF</button><button class="btn primary" type="submit" name="action" value="issue">Generate & Issue</button></div>
+    {% elif selected_type and selected_employee %}
+      <label>Document Date<input type="date" name="document_date" value="{{today.isoformat()}}" required></label>
+      <label>Reference No.<input name="reference_no" maxlength="80" placeholder="Optional"></label>
+      <label class="full-span">Notes / Instructions<textarea name="notes" rows="4" placeholder="This document type is queued for its approved company template."></textarea></label>
+      <div class="full-span readonly-note">
+        The <b>{{selected_type}}</b> template is not currently enabled for generation.
+      </div>
+      <div class="form-actions full-span"><button class="btn primary" type="submit">Save Request</button></div>
+    {% else %}
+      <div class="full-span readonly-note">Select an enabled HR document and employee to open the approved GRSJ document generator.</div>
+    {% endif %}
+  </form>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><div><p class="eyebrow">RECENT DOCUMENTS</p><h3>Document Queue</h3></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Date</th><th>Employee</th><th>Document</th><th>Reference</th><th>Status</th><th>File</th><th>Action</th></tr></thead><tbody>
+  {% for d in drafts %}<tr>
+    <td>{{d.created_at.strftime('%d %b %Y')}}</td>
+    <td><b>{{d.employee_name}}</b><small class="block">{{d.login_id}}</small></td>
+    <td>{{d.document_type}}</td><td>{{d.reference_no or '—'}}</td>
+    <td><span class="status {{'approved' if d.status=='Generated' else 'pending'}}">{{d.status}}</span></td>
+    <td>{% if d.generated_file %}<a class="table-action" href="{{url_for('document_uploaded',name=d.generated_file)}}" target="_blank">View PDF</a>{% else %}—{% endif %}</td>
+    <td>
+      {% if d.generated_file %}
+      <form method="post" action="{{url_for('admin_hr_document_delete',draft_id=d.id)}}" onsubmit="return confirm('Delete this issued document permanently? This will also remove it from the employee Documents section.');">
+        <button type="submit" class="table-action danger-action">Delete</button>
+      </form>
+      {% else %}—{% endif %}
+    </td>
+  </tr>{% else %}<tr><td colspan="7" class="empty">No document requests yet.</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+
+<script>
+function reloadGenerator(){
+  const f=document.getElementById('hrDocumentForm');
+  const type=f.querySelector('[name="document_type"]').value;
+  const emp=f.querySelector('[name="employee_id"]').value;
+  const q=new URLSearchParams(); if(type)q.set('document_type',type); if(emp)q.set('employee_id',emp);
+  window.location='{{url_for("admin_hr_documents")}}'+(q.toString()?'?'+q.toString():'');
+}
+</script>
+
+<section class="panel">
+  <div class="panel-head">
+    <div>
+      <p class="eyebrow">DOCUMENT REGISTER</p>
+      <h3>Active Employee Documents</h3>
+    </div>
+    <small>Expiry, acknowledgement and source tracking</small>
+  </div>
+
+  <div class="table-wrap document-register-wrap">
+    <table class="document-register-table">
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th>Document</th>
+          <th>No.</th>
+          <th>Issue / Expiry</th>
+          <th>Verification</th>
+          <th>Acknowledged</th>
+          <th>File</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for d in uploaded_docs %}
+        <tr>
+          <td>
+            <b>{{d.employee_name}}</b>
+            <small class="block">{{d.login_id}}</small>
+          </td>
+
+          <td>
+            {{d.title}}
+            <small class="block">{{d.document_type}}</small>
+          </td>
+
+          <td>
+            <code>{{d.document_number or '—'}}</code>
+            <small class="block">v{{d.version_no or 1}}</small>
+          </td>
+
+          <td>
+            {{d.issue_date or '—'}}
+            <small class="block">
+              {% if d.expiry_date %}
+                Expires {{d.expiry_date}}
+              {% else %}
+                No expiry
+              {% endif %}
+            </small>
+          </td>
+
+          <td>
+            <span class="status {{(d.verification_status or 'Pending')|lower}}">
+              {{d.verification_status or 'Pending'}}
+            </span>
+            <small class="block">{{d.verification_source or 'Manual Upload'}}</small>
+          </td>
+
+          <td>
+            {{d.acknowledged_at.strftime('%d %b %Y') if d.acknowledged_at else 'Not yet'}}
+          </td>
+
+          <td>
+            <a class="table-action"
+               href="{{url_for('document_uploaded',name=d.file_name)}}"
+               target="_blank">
+              View
+            </a>
+          </td>
+
+          <td>
+            <form method="post"
+                  action="{{url_for('admin_employee_document_delete',did=d.id)}}"
+                  onsubmit="return confirm('Remove this document from the active employee record? Audit history will be preserved.');">
+              <button type="submit" class="table-action danger-action">
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+
+        {% else %}
+        <tr>
+          <td colspan="8" class="empty">No active employee documents.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{% endblock %}

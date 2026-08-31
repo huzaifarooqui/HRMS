@@ -1,0 +1,26 @@
+GRSJ HRMS v1.0.29 - DigiLocker Ready + Modular CSS
+====================================================
+
+1) DigiLocker Requester integration finalized for credential-only activation.
+   - Run CONFIGURE_DIGILOCKER.bat after API Setu credentials arrive.
+   - Production callback default: https://hrms.grsj.in/admin/digilocker/callback
+   - OAuth 2.0 Authorization Code + PKCE S256.
+   - Scope: files.issueddocs; purpose: verification.
+   - Temporary tokens encrypted before DB storage.
+   - HMAC document integrity check supported.
+   - Duplicate DigiLocker URI import blocked.
+   - Access token revoked when flow finishes.
+   - Admin Settings now shows DigiLocker readiness and registered callback.
+
+2) CSS modular architecture.
+   - static/css/app.css remains the stable entrypoint.
+   - Original 81KB stylesheet was split, in exactly the same cascade order, into
+     static/css/parts/01..08 CSS modules.
+   - No existing template needs a CSS URL change.
+   - Digital ID PDF renderer concatenates ordered CSS modules directly so PDF
+     generation does not depend on @import resolution.
+   - See Server/static/css/CSS_ARCHITECTURE.md.
+
+3) Action Center card UI includes the approved horizontal metric-card layout.
+
+No payroll engine changes are included.

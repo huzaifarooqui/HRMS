@@ -1,0 +1,9 @@
+GRSJ HRMS v1.0.9 - Premium Offer Letter
+
+- Uses the company-supplied GRSJ letterhead as the official PDF background.
+- Existing Admin > Documents generator upgraded; no duplicate menu/module.
+- Offer Letter fields auto-fill from employee/company data and remain editable before issue.
+- Preview PDF does not save/issue the document.
+- Generate & Issue stores the PDF in persistent Documents storage, records the generation in hr_document_drafts, and automatically publishes it to the employee Documents page.
+- Professional two-page Offer Letter includes position, department, joining date, location, reporting, compensation, probation, conduct, confidentiality, verification, company policies, separation and acceptance/signature.
+- Other HR document types remain safely queued as Awaiting Template until their formats are approved.

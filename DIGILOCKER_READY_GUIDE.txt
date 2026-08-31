@@ -1,0 +1,62 @@
+GRSJ HRMS - DIGILOCKER REQUESTER READY GUIDE
+=============================================
+
+STATUS
+------
+The HRMS integration is pre-wired for DigiLocker Requester OAuth 2.0 + PKCE.
+No source-code edit should be required when GRSJ receives partner credentials.
+
+WHEN CREDENTIALS ARRIVE
+-----------------------
+1. Confirm API Setu has registered this callback URL exactly:
+   https://hrms.grsj.in/admin/digilocker/callback
+
+2. Double-click:
+   CONFIGURE_DIGILOCKER.bat
+
+3. Enter:
+   - Client ID
+   - Client Secret
+   - Press Enter for the default callback unless API Setu supplied a different approved callback.
+
+4. Restart the HRMS server.
+
+5. Open:
+   Admin > Employees > [Employee] > Documents
+   Click "Verify / Import from DigiLocker".
+
+WHAT HRMS DOES AUTOMATICALLY
+----------------------------
+- Creates a unique OAuth state value (CSRF protection).
+- Creates PKCE verifier/challenge (S256).
+- Redirects the authorized admin to DigiLocker consent.
+- Exchanges the one-time authorization code for a token.
+- Encrypts temporary access/refresh tokens using the HRMS SECRET_KEY before DB storage.
+- Lists issued DigiLocker documents after user consent.
+- Lets the authorized admin choose a document to import.
+- Downloads the selected document and checks DigiLocker HMAC integrity when supplied.
+- Stores the imported document as verification_source = DigiLocker and status = Verified.
+- Prevents duplicate import of the same DigiLocker URI for the same employee.
+- Revokes the access token when the verification/import flow is finished.
+- Deletes expired OAuth sessions automatically when a new flow starts.
+
+SECURITY / PRIVACY
+------------------
+- Never put the Client Secret in app.py, templates, screenshots, GitHub, or chat.
+- Keep Server/.env private and excluded from Git.
+- Employee consent is required for each verification session.
+- Import only documents required for legitimate HR verification.
+- DigiLocker raw access tokens are temporary and encrypted in the database.
+
+CURRENT PRODUCTION DEFAULTS
+---------------------------
+Authorization: https://digilocker.meripehchaan.gov.in/public/oauth2/1/authorize
+Token:         https://digilocker.meripehchaan.gov.in/public/oauth2/2/token
+Issued docs:   https://digilocker.meripehchaan.gov.in/public/oauth2/2/files/issued
+File by URI:   https://digilocker.meripehchaan.gov.in/public/oauth2/1/file/uri
+Revoke:        https://digilocker.meripehchaan.gov.in/public/oauth2/1/revoke
+Scope:         files.issueddocs
+Purpose:       verification
+
+All endpoint values can be overridden by environment variables if API Setu supplies
+partner-specific values in the approval/go-live communication.

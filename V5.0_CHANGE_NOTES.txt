@@ -1,0 +1,8 @@
+GRSJ HRMS V5.0
+- Desktop UI scaled to ~80% equivalent; mobile remains 100%.
+- Allocation renamed to Performance Tracking in Admin + Employee sidebars.
+- Admin tables renamed/reordered:
+  Pivot Table 1 -> State-wise Performance -> source Pivot 1 (largest state table)
+  Pivot Table 2 -> Caller-wise Performance -> source Pivot 2
+  Pivot Table 3 -> Fresh / Stab Performance -> source Pivot 3
+- Existing DRR, merged Manager/RO, Total/Grand Total, center alignment and sync logic retained.

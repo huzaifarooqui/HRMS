@@ -1,0 +1,27 @@
+GRSJ HRMS FINAL V5 - Employee Performance + Persistent Uploads
+
+FIX 1 - PHOTOS/DOCUMENTS SURVIVE CODE REPLACEMENT
+Runtime files now use:
+  D:\GRSJ\GRSJ-HRMS_DATA\uploads\employees
+  D:\GRSJ\GRSJ-HRMS_DATA\uploads\company
+  D:\GRSJ\GRSJ-HRMS_DATA\uploads\documents
+
+Before replacing the CURRENT production code with this build, run once from
+the current project root:
+  MIGRATE_UPLOADS_TO_PERSISTENT_DATA.bat
+
+The app also copies any remaining legacy Server\uploads files automatically.
+
+FIX 2 - EMPLOYEE PERFORMANCE WORKBOOK VARIANTS
+The parser no longer requires the second column to be "State".
+It accepts the actual dimension immediately after RO, including:
+  State / Code / Caller / Fresh-Stab / future labels.
+This fixes the Fazil + Heena "RO ; Code" workbooks shown in testing.
+
+FIX 3 - LUCKY REFRESH 1062 DUPLICATE SIGNATURE
+Snapshots now use safe MySQL upsert behavior on the existing
+(employee_id, source_signature) unique key.
+Force Refresh can re-read the same file without creating a duplicate-key error.
+
+Existing automatic employee-name Koofr discovery remains active.
+Huzaifa and SyncTrash remain excluded from employee folder discovery.

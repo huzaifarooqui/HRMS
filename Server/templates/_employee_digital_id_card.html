@@ -1,0 +1,55 @@
+{% set employee_address = ((employee.address or '') ~ (', ' if employee.address and (employee.city or employee.district or employee.state or employee.pincode) else '') ~ (employee.city or '') ~ (', ' if employee.city and (employee.district or employee.state or employee.pincode) else '') ~ (employee.district or '') ~ (', ' if employee.district and (employee.state or employee.pincode) else '') ~ (employee.state or '') ~ (' - ' if employee.state and employee.pincode else '') ~ (employee.pincode or '')) %}
+{% set emergency_name = employee.emergency_contact_name or employee.father_name or employee.mother_name or 'Not configured' %}
+{% set emergency_phone = employee.emergency_contact_phone or employee.father_phone or employee.mother_phone or employee.alternate_phone or 'Not configured' %}
+{% set _logo_src = card_logo_src if card_logo_src is defined and card_logo_src else (url_for('company_uploaded',name=company.company_logo) if company.company_logo else url_for('static',filename='images/Logo.png')) %}
+{% set _photo_src = card_photo_src if card_photo_src is defined and card_photo_src else (url_for('uploaded',name=employee.photo) if employee.photo else '') %}
+{% set _qr_src = card_qr_src if card_qr_src is defined and card_qr_src else url_for('employee_digital_id_qr') %}
+{% set _show_back = show_back if show_back is defined else false %}
+
+<div class="digital-id-card premium-white-id"{% if interactive_card is defined and interactive_card %} id="digitalIdCard"{% endif %} aria-label="GRSJ employee digital identity card">
+  <article class="digital-id-face digital-id-front premium-id-front"{% if interactive_card is defined and interactive_card %} id="idFront"{% endif %} {% if _show_back %}hidden{% endif %}>
+    <div class="premium-id-accent"></div><div class="premium-id-watermark">GRSJ</div>
+    <div class="premium-id-brand-row">
+      <img src="{{_logo_src}}" onerror="this.src='{{url_for('static',filename='images/Logo.png')}}'" alt="GRSJ logo">
+      <div class="premium-id-brand-copy"><strong>{{company.company_name or 'Guru Ram Singh Ji Associates'}}</strong><small>OFFICIAL EMPLOYEE IDENTITY CARD</small></div>
+      <span class="premium-id-status {{employee.status|lower}}">{{employee.status or 'Inactive'}}</span>
+    </div>
+    <div class="premium-id-front-body">
+      <div class="premium-id-photo-block">
+        <div class="premium-id-photo">{% if _photo_src %}<img src="{{_photo_src}}" alt="{{employee.first_name}}">{% else %}<span>{{employee.first_name[0]}}</span>{% endif %}</div>
+        <div class="premium-id-code"><small>EMPLOYEE ID</small><b>{{employee.employee_id or employee.login_id or '—'}}</b></div>
+      </div>
+      <div class="premium-id-profile">
+        <span class="premium-id-kicker">EMPLOYEE</span>
+        <h2>{{employee.first_name}} {{employee.last_name or ''}}</h2>
+        <p class="premium-id-designation">{{employee.designation or 'Employee'}}</p>
+        <div class="premium-id-info-grid">
+          <div><small>DEPARTMENT</small><b>{{employee.department_name or employee.department or 'Unassigned'}}</b></div>
+          <div><small>BLOOD GROUP</small><b class="blood-value">{{employee.blood_group or '—'}}</b></div>
+          <div><small>DATE OF JOINING</small><b>{{employee.joining_date.strftime('%d/%m/%Y') if employee.joining_date else '—'}}</b></div>
+          <div><small>VALID TILL</small><b>{{valid_till.strftime('%d/%m/%Y') if valid_till else '—'}}</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="premium-id-footer"><span>GRSJ HRMS · DIGITAL IDENTITY</span><span>AUTHORISED EMPLOYEE</span></div>
+  </article>
+
+  <article class="digital-id-face digital-id-back premium-id-back"{% if interactive_card is defined and interactive_card %} id="idBack"{% endif %} {% if not _show_back %}hidden{% endif %}>
+    <div class="premium-back-top">
+      <div class="premium-back-brand"><img src="{{_logo_src}}" onerror="this.src='{{url_for('static',filename='images/Logo.png')}}'" alt="GRSJ logo"><div><strong>{{company.company_name or 'Guru Ram Singh Ji Associates'}}</strong><small>SECURE EMPLOYEE IDENTIFICATION</small></div></div>
+    </div>
+    <div class="premium-back-body">
+      <div class="premium-back-details">
+        <div class="premium-back-item wide"><small>EMPLOYEE ADDRESS</small><b>{{employee_address.strip(', ') or 'Not configured'}}</b></div>
+        <div class="premium-back-item wide"><small>COMPANY ADDRESS</small><b>{{company.company_address or 'Not configured'}}</b></div>
+        <div class="premium-back-item"><small>EMERGENCY CONTACT</small><b>{{emergency_name}}</b><span>{{emergency_phone}}</span></div>
+        <div class="premium-back-item"><small>COMPANY CONTACT</small><b>{{company.company_phone or 'Not configured'}}</b><span>{{company.company_email or ''}}</span></div>
+      </div>
+      <div class="premium-back-verify">
+        <div class="premium-id-qr"><img src="{{_qr_src}}" alt="Employee verification QR"></div>
+        <strong>SCAN TO VERIFY</strong><small>Current employment status</small>
+      </div>
+    </div>
+    <div class="premium-back-footer"><p>If found, please return this card to the company address shown above. This identity card remains the property of {{company.company_name or 'Guru Ram Singh Ji Associates'}}.</p><span>GRSJ · OFFICIAL ID</span></div>
+  </article>
+</div>

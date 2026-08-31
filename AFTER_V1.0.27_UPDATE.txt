@@ -1,0 +1,18 @@
+GRSJ HRMS v1.0.27 - First Start Checklist
+==========================================
+
+1) Keep your existing .env / database configuration unchanged.
+2) Start the server normally. schema.py will automatically add the new governance columns/tables.
+3) Sign in with the existing administrator account. It is migrated to role: Super Admin.
+4) Open Admin Access from the sidebar and create separate HR, Manager and Owner IDs.
+5) Approval flow:
+   - HR submits Employee Profile Update / Leave Approval
+   - Manager approves in Approval Center
+   - Owner gives final approval in Approval Center
+   - Super Admin can approve/override any pending request
+6) Digital ID PDF uses Playwright Chromium. If this machine has not already installed it, run from Server:
+   "..\.venv\Scripts\python.exe" -m playwright install chromium
+7) Test Digital ID > Download PDF. It should be two pages and match the live card Front / Back.
+8) PIP is available in Admin > Documents > Create Employee Document.
+
+Important: make a database backup before replacing a production build.

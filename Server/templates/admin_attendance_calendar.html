@@ -1,0 +1,47 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}WORKFORCE INSIGHTS{% endblock %}
+{% block heading %}Attendance Calendar{% endblock %}
+{% block content %}
+<section class="premium-toolbar">
+  <form method="get" class="calendar-controls">
+    <label>Month<input type="month" name="month" value="{{month}}"></label>
+    <label>Employee
+      <select name="employee_id">
+        <option value="">All employees</option>
+        {% for e in employees %}
+        <option value="{{e.id}}" {{'selected' if selected_employee_id|string==e.id|string else ''}}>{{e.first_name}} {{e.last_name or ''}} · {{e.login_id}}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button class="btn primary" type="submit">Apply</button>
+  </form>
+</section>
+<section class="metric-grid calendar-summary">
+  <article class="metric"><div class="metric-icon green">✓</div><div><small>Present</small><b>{{summary.present}}</b><span>Attendance records</span></div></article>
+  <article class="metric"><div class="metric-icon amber">◷</div><div><small>Late</small><b>{{summary.late}}</b><span>Needs attention</span></div></article>
+  <article class="metric"><div class="metric-icon violet">½</div><div><small>Half Day</small><b>{{summary.half_day}}</b><span>Partial attendance</span></div></article>
+  <article class="metric"><div class="metric-icon blue">!</div><div><small>Absent</small><b>{{summary.absent}}</b><span>Absent / leave</span></div></article>
+</section>
+<section class="panel premium-calendar-panel">
+  <div class="panel-head">
+    <div><p class="eyebrow">MONTHLY VIEW</p><h3>{{month}}</h3></div>
+    <div class="calendar-legend"><span class="legend present">Present</span><span class="legend late">Late</span><span class="legend half-day">Half Day</span><span class="legend absent">Absent</span></div>
+  </div>
+  <div class="calendar-grid">
+    {% for label in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}<div class="calendar-weekday">{{label}}</div>{% endfor %}
+    {% for cell in days %}
+      {% if cell %}
+      {% set r=cell.record %}
+      <div class="calendar-day {{r.status|lower|replace(' ','-') if r else 'empty-day'}} {{'today' if cell.date==today else ''}}">
+        <div class="calendar-day-top"><b>{{cell.date.day}}</b>{% if r %}<span class="status {{r.status|lower|replace(' ','-')}}">{{r.status}}</span>{% endif %}</div>
+        {% if r %}
+          <small>{{r.employee_name if not selected_employee_id else ''}}</small>
+          <small>{{r.check_in.strftime('%I:%M %p') if r.check_in else 'No check-in'}} → {{r.check_out.strftime('%I:%M %p') if r.check_out else 'No checkout'}}</small>
+          {% if r.working_minutes is not none %}<small>{{r.working_minutes|hm}} worked</small>{% endif %}
+        {% else %}<small>No attendance record</small>{% endif %}
+      </div>
+      {% else %}<div class="calendar-day blank"></div>{% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

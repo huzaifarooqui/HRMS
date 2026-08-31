@@ -1,0 +1,11 @@
+GRSJ HRMS v1.0.30 - Public Employee ID Verification
+
+Added public route:
+  /verify/employee-id/<employee-id>
+
+Purpose:
+- Allows the corporate grsj.in Verify Representative page to verify an authorised representative by the Employee ID printed on the official Digital ID.
+- Shows only the existing public verification fields (name, employee ID, designation, department, current status).
+- Inactive/terminated/resigned/archived employees are not returned as verified.
+
+No database migration is required.

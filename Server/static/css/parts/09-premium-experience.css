@@ -1,0 +1,93 @@
+
+/* GRSJ HRMS Premium Experience Pack v1.1 */
+:root{
+  --premium-navy:#0c1730;
+  --premium-blue:#1d4ed8;
+  --premium-gold:#b88a2a;
+  --premium-ink:#172033;
+  --premium-muted:#6b7280;
+  --premium-border:rgba(15,23,42,.09);
+  --premium-shadow:0 18px 50px rgba(15,23,42,.08);
+}
+.hero,.metric,.panel,.check-card{
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.metric:hover,.panel:hover{box-shadow:var(--premium-shadow);transform:translateY(-2px)}
+.hero{
+  position:relative;overflow:hidden;
+  border:1px solid var(--premium-border);
+}
+.hero:after{
+  content:"";position:absolute;right:-90px;top:-120px;width:280px;height:280px;
+  border-radius:50%;border:1px solid rgba(184,138,42,.18);
+  box-shadow:0 0 0 35px rgba(184,138,42,.035),0 0 0 70px rgba(29,78,216,.025);
+  pointer-events:none;
+}
+.premium-toolbar{
+  margin:0 0 18px;
+  border:1px solid var(--premium-border);
+  border-radius:18px;
+  padding:14px;
+  background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(248,250,252,.94));
+  box-shadow:0 10px 35px rgba(15,23,42,.05);
+}
+.calendar-controls{display:flex;gap:12px;align-items:end;flex-wrap:wrap}
+.calendar-controls label{display:grid;gap:6px;font-size:12px;font-weight:700;color:var(--premium-muted)}
+.calendar-controls input,.calendar-controls select{
+  min-height:42px;padding:9px 12px;border:1px solid var(--premium-border);
+  border-radius:10px;background:#fff;color:var(--premium-ink);
+}
+.calendar-controls .btn{min-height:42px}
+.premium-calendar-panel{overflow:hidden}
+.calendar-legend{display:flex;gap:8px;flex-wrap:wrap}
+.legend{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f6}
+.legend.present{background:rgba(34,197,94,.1)}
+.legend.late{background:rgba(245,158,11,.12)}
+.legend.half-day{background:rgba(139,92,246,.12)}
+.legend.absent{background:rgba(239,68,68,.1)}
+.calendar-grid{
+  display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;
+}
+.calendar-weekday{
+  padding:8px 10px;font-size:11px;font-weight:800;text-transform:uppercase;
+  color:var(--premium-muted);letter-spacing:.05em;
+}
+.calendar-day{
+  min-height:112px;padding:10px;border-radius:14px;border:1px solid var(--premium-border);
+  background:#fff;display:flex;flex-direction:column;gap:5px;overflow:hidden;
+}
+.calendar-day.blank{background:transparent;border:0}
+.calendar-day-top{display:flex;justify-content:space-between;gap:6px;align-items:flex-start}
+.calendar-day-top>b{font-size:16px}
+.calendar-day small{font-size:10px;color:var(--premium-muted);line-height:1.35}
+.calendar-day.present{border-top:3px solid #22c55e}
+.calendar-day.late{border-top:3px solid #f59e0b}
+.calendar-day.half-day{border-top:3px solid #8b5cf6}
+.calendar-day.absent,.calendar-day.leave{border-top:3px solid #ef4444}
+.calendar-day.holiday{border-top:3px solid #3b82f6}
+.calendar-day.today{box-shadow:0 0 0 2px rgba(29,78,216,.18)}
+.calendar-day .status{font-size:9px;padding:3px 6px;white-space:nowrap}
+.analytics-list{display:grid;gap:14px}
+.analytics-row{display:grid;grid-template-columns:minmax(140px,1fr) minmax(120px,2fr) auto;gap:12px;align-items:center}
+.analytics-row>div:first-child{display:grid;gap:3px}
+.analytics-row small{color:var(--premium-muted)}
+.analytics-bar{height:9px;border-radius:999px;background:#eef2f7;overflow:hidden}
+.analytics-bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--premium-blue),var(--premium-gold))}
+.muted{color:var(--premium-muted)}
+@media(max-width:800px){
+  .calendar-grid{gap:5px}
+  .calendar-day{min-height:92px;padding:7px}
+  .calendar-day small{font-size:9px}
+  .calendar-day .status{display:none}
+  .analytics-row{grid-template-columns:1fr auto}
+  .analytics-bar{grid-column:1/-1}
+}
+@media(max-width:520px){
+  .calendar-weekday{padding:5px 2px;text-align:center;font-size:9px}
+  .calendar-day{min-height:76px;border-radius:10px}
+  .calendar-day small{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero,.metric,.panel,.check-card{transition:none!important}
+  .metric:hover,.panel:hover{transform:none}
+}

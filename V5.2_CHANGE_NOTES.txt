@@ -1,0 +1,10 @@
+GRSJ HRMS V5.2
+- Removed the V5.1 width:125% workaround that caused outer horizontal/vertical scrollbars.
+- Keeps the approved ~80% desktop visual density.
+- Extends only vertical shell/sidebar height to compensate for CSS zoom, removing the blank lower strip.
+- Page-level horizontal overflow is hidden; table overflow remains inside its own table wrapper only.
+- Admin Performance Tracking data order corrected:
+  Pivot Table 1 = State table
+  Pivot Table 2 = Caller table
+  Pivot Table 3 = Fresh/Stab table
+- Existing labels/text/DRR/merges/totals/alignment unchanged.

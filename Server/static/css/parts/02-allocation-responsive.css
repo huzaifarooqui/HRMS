@@ -1,0 +1,100 @@
+/* Allocation module */
+.allocation-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
+.allocation-status{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 22px}
+.allocation-status>div{background:#fff;border:1px solid #e6ebf3;border-radius:18px;padding:17px 18px;box-shadow:0 10px 28px rgba(15,23,42,.05)}
+.allocation-status small{display:block;color:#7b879c;font-size:10px;font-weight:800;letter-spacing:.12em;margin-bottom:7px}
+.allocation-status b{display:block;color:#172033;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px;box-shadow:0 0 0 4px rgba(34,197,94,.12)}
+.allocation-note{color:#7b879c}.allocation-table-wrap{max-width:100%;overflow:auto;border:1px solid #e7ebf2;border-radius:14px}
+.allocation-table{min-width:980px;width:100%;border-collapse:separate;border-spacing:0;background:#fff}
+.allocation-table th{position:sticky;top:0;z-index:1;background:#eef3ff!important;color:#273653!important;font-size:11px!important;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #dbe4f4!important}
+.allocation-table th,.allocation-table td{padding:12px 13px!important;border-right:1px solid #edf1f7;border-bottom:1px solid #edf1f7;text-align:right;white-space:nowrap}
+.allocation-table th:nth-child(1),.allocation-table th:nth-child(2),.allocation-table td:nth-child(1),.allocation-table td:nth-child(2){text-align:left}
+.allocation-table tbody tr:hover td{background:#f8fbff}
+.allocation-empty{text-align:center;padding:70px 24px}.empty-state-icon{width:66px;height:66px;border-radius:20px;background:#eaf1ff;color:#2563eb;display:grid;place-items:center;margin:0 auto 18px;font-size:28px}
+@media(max-width:760px){.allocation-head{align-items:flex-start;flex-direction:column}.allocation-status{grid-template-columns:1fr}.allocation-status>div{padding:14px 15px}}
+
+/* Allocation V4.3: Excel-like Manager merge + Total merge */
+.allocation-manager-cell{
+  font-weight:800;
+  vertical-align:middle!important;
+  text-align:center!important;
+  background:#f8fbff;
+  min-width:150px;
+}
+.allocation-total-row td{
+  font-weight:800!important;
+  background:#eaf3fb!important;
+  border-top:2px solid #8ec7e6!important;
+}
+.allocation-total-label{
+  text-align:center!important;
+}
+
+/* Allocation V4.4: center-align all table content */
+.allocation-table th,
+.allocation-table td{
+  text-align:center!important;
+  vertical-align:middle!important;
+}
+.allocation-manager-cell,
+.allocation-total-label{
+  text-align:center!important;
+  vertical-align:middle!important;
+}
+
+.admin-allocation-block{margin-bottom:24px}.admin-allocation-block .allocation-table th,.admin-allocation-block .allocation-table td{text-align:center!important;vertical-align:middle!important}
+
+/* V5.2 desktop density fix
+   Keep the approved 80% visual scale, but only extend HEIGHT.
+   Do not widen the page, so no outer horizontal scrollbar is created. */
+@media (min-width: 901px){
+  html{
+    zoom:.80;
+    background:var(--bg);
+    overflow-x:hidden!important;
+  }
+  body{
+    margin:0!important;
+    min-height:125vh!important;
+    background:var(--bg)!important;
+    overflow-x:hidden!important;
+  }
+
+  /* full-screen landing/auth screens */
+  .home-match-shell,
+  .auth-panel{
+    min-height:125vh!important;
+  }
+
+  /* admin / employee application shells */
+  .app-shell,
+  .employee-shell{
+    min-height:125vh!important;
+  }
+  .sidebar{
+    height:125vh!important;
+    min-height:125vh!important;
+  }
+  .employee-side{
+    min-height:125vh!important;
+  }
+  .main,
+  .employee-main{
+    min-height:125vh!important;
+    background:var(--bg)!important;
+  }
+
+  /* never allow page-level horizontal scrolling;
+     tables may still scroll inside their own table wrapper if needed */
+  .app-shell,
+  .employee-shell,
+  .main,
+  .employee-main,
+  .auth-panel,
+  .home-match-shell{
+    max-width:100%!important;
+    overflow-x:hidden!important;
+  }
+}
+

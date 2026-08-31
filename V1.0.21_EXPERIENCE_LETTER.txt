@@ -1,0 +1,8 @@
+GRSJ HRMS v1.0.21
+- Pay Slip terminology changed from Other Earnings to Incentive in admin form and generated PDF.
+- Experience Letter enabled in Admin > Documents.
+- Experience Letter is a professional one-page employer-issued letter using the same clean GRSJ letterhead.
+- Active and inactive employees are available in the Documents employee selector so separated employees can receive Experience Letters.
+- Joining date is pre-filled; Last Working Day, designation, department, role summary, conduct remarks and optional remarks can be reviewed before issue.
+- Preview PDF and Generate & Issue workflows enabled.
+- Issued Experience Letter is automatically available in Employee Documents.

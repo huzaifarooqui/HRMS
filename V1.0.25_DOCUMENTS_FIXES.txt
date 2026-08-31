@@ -1,0 +1,18 @@
+GRSJ HRMS v1.0.25 - Documents Reliability & Cleanup
+
+1. Removed "Other" from the Admin > Documents document-type dropdown.
+2. "Salary Certificate" remains removed.
+3. Added Delete action to generated HR documents in Document Queue.
+   - Deletes the HR document queue record.
+   - Deletes the matching employee-facing document record.
+   - Deletes the generated PDF file from persistent document storage.
+   - Includes browser confirmation before permanent deletion.
+4. Fixed Generate & Issue database error:
+   - Previous code inserted verification_status='Issued'.
+   - Existing production database does not accept 'Issued'.
+   - HRMS-generated documents now use verification_status='Verified'
+     with verification_source='HRMS Generated', matching an existing
+     database-compatible status already used by the system.
+5. Applies to all 8 generated modules:
+   Offer Letter, Appointment Letter, Promotion Letter, Termination Letter,
+   Pay Slip, Experience Letter, Warning Letter, Relieving Letter.

@@ -1,0 +1,22 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}EMPLOYEE VOICE{% endblock %}{% block heading %}Feedback{% endblock %}
+{% block content %}
+<section class="toolbar"><form><select name="status"><option value="">All Feedback</option>{% for s in ['New','Reviewed','Resolved'] %}<option {{'selected' if status_filter==s else ''}}>{{s}}</option>{% endfor %}</select><button class="btn secondary">Filter</button></form></section>
+<section class="feedback-admin-grid">
+{% for f in feedback_rows %}
+<article class="panel feedback-admin-card">
+  <div class="panel-head"><div><p class="eyebrow">{{f.login_id}}</p><h3>{{f.employee_name}}</h3></div><span class="status {{f.status|lower}}">{{f.status}}</span></div>
+  <p class="feedback-message">{{f.message}}</p><small>{{f.created_at.strftime('%d %b %Y, %I:%M %p')}}</small>
+  {% if f.response_locked %}
+    <div class="feedback-reply" style="margin-top:16px"><small>LOCKED ADMIN RESPONSE</small><p>{{f.admin_reply or 'No written response was added.'}}</p><small>Saved {{f.locked_at.strftime('%d %b %Y, %I:%M %p') if f.locked_at else ''}} · View only</small></div>
+  {% else %}
+    <form method="post" action="{{url_for('admin_feedback_update',fid=f.id)}}" class="feedback-review">
+      <label>Admin response<textarea name="admin_reply" rows="3" placeholder="This response becomes permanently view-only after Save.">{{f.admin_reply or ''}}</textarea></label>
+      <label>Status<select name="status">{% for s in ['New','Reviewed','Resolved'] %}<option {{'selected' if f.status==s else ''}}>{{s}}</option>{% endfor %}</select></label>
+      <button class="btn primary" onclick="return confirm('Save this response? After saving it will be locked and cannot be edited.')">Save & Lock</button>
+    </form>
+  {% endif %}
+</article>
+{% else %}<section class="panel empty">No feedback found.</section>{% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}GLOBAL SEARCH{% endblock %}{% block heading %}Search{% endblock %}
+{% block content %}
+<section class="toolbar"><form class="searchbox searchbox-wide"><span>⌕</span><input name="q" value="{{q}}" placeholder="Employee name, Login ID, phone, document title or number" autofocus><button class="btn primary">Search</button></form></section>
+{% if q %}
+<section class="content-grid">
+<article class="panel"><div class="panel-head"><div><p class="eyebrow">PEOPLE</p><h3>Employees</h3></div></div>
+<div class="search-result-list">{% for e in employees %}<a href="{{url_for('employee_view',eid=e.id)}}"><b>{{e.first_name}} {{e.last_name or ''}}</b><small>{{e.login_id}} · {{e.designation or '—'}} · {{e.department_name or 'Unassigned'}} · {{e.phone or 'No phone'}}</small></a>{% else %}<p class="empty">No employees matched.</p>{% endfor %}</div></article>
+<article class="panel"><div class="panel-head"><div><p class="eyebrow">RECORDS</p><h3>Documents</h3></div></div>
+<div class="search-result-list">{% for d in documents %}<a href="{{url_for('admin_hr_documents')}}"><b>{{d.title}}</b><small>{{d.employee_name}} · {{d.document_type}} · {{d.document_number or 'No number'}}</small></a>{% else %}<p class="empty">No documents matched.</p>{% endfor %}</div></article>
+</section>{% endif %}
+{% endblock %}

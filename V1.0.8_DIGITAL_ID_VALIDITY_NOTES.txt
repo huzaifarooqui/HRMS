@@ -1,0 +1,7 @@
+GRSJ HRMS v1.0.8
+- Premium flip animation restored without mirrored text.
+- LIVE VERIFIED badge removed.
+- VALID TILL added to front and back.
+- Valid Till = Date of Joining + 1 calendar year.
+- 29-Feb joining dates safely become 28-Feb in a non-leap following year.
+- Downloaded PDF updated with the same validity information.

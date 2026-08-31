@@ -1,0 +1,15 @@
+GRSJ HRMS FINAL V3 corrections
+
+Admin Performance Tracking
+- Tables are no longer assigned by Pivot index.
+- They are classified from their actual visible headers:
+  State -> State-wise Performance
+  Caller -> Caller-wise Performance
+  Fresh/Stab -> Fresh / Stab Performance
+- Display order: State-wise, Caller-wise, Fresh/Stab.
+- Final overall row in every table merges RO + dimension cells and leaves that merged cell blank.
+- Final row remains bold.
+- Manager subtotal rows may still show Total.
+- Main heading changed from Allocation to Performance.
+- Refresh button added beside the date.
+- Refresh re-reads the exact Koofr Admin workbook through the existing automation and reloads the latest portal snapshot.

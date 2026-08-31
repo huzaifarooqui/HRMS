@@ -1,0 +1,11 @@
+GRSJ HRMS v1.0.20
+- Promotion Letter added to Documents dropdown.
+- Salary Certificate removed from Documents dropdown.
+- Promotion Letter appreciation closing moved to Page 2.
+- Pay Slip enabled in Admin > Documents.
+- Pay Slip uses the same attendance/payable-day logic as Admin Reports.
+- Automatic attendance summary: Present, Late, Half Day, Absent/Leave, Holiday Credit, Payable Days.
+- Automatic attendance deduction from monthly salary.
+- Optional Other Earnings / Other Deductions and remarks.
+- Same approved clean GRSJ letterhead with golden address footer removed.
+- Preview PDF and Generate & Issue; issued Pay Slip saved in Employee Documents.

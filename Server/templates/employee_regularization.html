@@ -1,0 +1,259 @@
+{% extends 'base_employee.html' %}
+{% block content %}
+
+<header class="employee-head">
+    <div>
+        <p class="eyebrow">ATTENDANCE SUPPORT</p>
+        <h1>Attendance Regularization</h1>
+        <p>Request correction for a missed or incorrect punch. Requests start with HR and follow the approval workflow.</p>
+    </div>
+</header>
+
+<section class="panel">
+    <form method="post" class="form-grid">
+        
+        <label>
+            Date
+            <input
+                type="date"
+                name="attendance_date"
+                id="attendanceDate"
+                required
+            >
+        </label>
+        
+        <label>Request Type
+            <select name="request_type" id="requestType" required>
+                <option>Missed Check-in</option>
+                <option>Missed Checkout</option>
+                <option>Wrong Attendance</option>
+                <option>Official Duty</option>
+                <option>Late Regularization</option>
+            </select>
+        </label>
+
+        <div id="attendanceStatusCard"
+            class="wide"
+            style="display:none;">
+            <div class="panel" style="margin:0;">
+                <div class="panel-head">
+                    <h3>Current Attendance</h3>
+                </div>
+
+                <div class="form-grid">
+                    <div>
+                        <strong>Status</strong>
+                        <div id="currentAttendanceStatus">—</div>
+                    </div>
+
+                    <div>
+                        <strong>Check-in</strong>
+                        <div id="currentAttendanceCheckIn">—</div>
+                    </div>
+
+                    <div>
+                        <strong>Check-out</strong>
+                        <div id="currentAttendanceCheckOut">—</div>
+                    </div>
+
+                    <div>
+                        <strong>Remarks</strong>
+                        <div id="currentAttendanceRemarks">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <label>Requested Check-in
+            <input
+                type="time"
+                name="requested_check_in"
+                id="requestedCheckIn"
+            >
+        </label>
+        
+        <label>Requested Checkout
+            <input
+                type="time"
+                name="requested_check_out"
+                id="requestedCheckOut"
+            >
+        </label>
+
+        <label>
+            Requested Status
+            <select name="requested_status" id="requestedStatus" required>
+                <option value="">Select status</option>
+                <option value="Present">Present</option>
+                <option value="Late">Late</option>
+                <option value="Half Day">Half Day</option>
+                <option value="Absent">Absent</option>
+            </select>
+        </label>
+        
+        <label class="wide">Reason
+            <textarea name="reason" required minlength="3" maxlength="500"></textarea>
+        </label>
+        
+        <div class="wide">
+            <button class="btn primary">Submit Request</button>
+        </div>
+
+    </form>
+</section>
+
+<section class="panel">
+    <div class="panel-head">
+        <h3>My Requests</h3>
+    </div>
+    
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            
+            <tbody>{% for r in rows %}
+                <tr>
+                    <td>{{r.attendance_date.strftime('%d %b %Y')}}</td>
+                    <td>{{r.request_type}}</td>
+                    <td>
+                        <span class="status {{r.status|lower}}">{{r.status}}</span>
+                    </td>
+                    <td>{{r.created_at.strftime('%d %b %Y')}}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="empty">No requests yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const dateInput = document.getElementById('attendanceDate');
+    const statusCard = document.getElementById('attendanceStatusCard');
+
+    const statusEl = document.getElementById('currentAttendanceStatus');
+    const checkInEl = document.getElementById('currentAttendanceCheckIn');
+    const checkOutEl = document.getElementById('currentAttendanceCheckOut');
+    const remarksEl = document.getElementById('currentAttendanceRemarks');
+
+    const requestType = document.getElementById('requestType');
+    const requestedCheckIn = document.getElementById('requestedCheckIn');
+    const requestedCheckOut = document.getElementById('requestedCheckOut');
+    const requestedStatus = document.getElementById('requestedStatus');
+
+    function resetAttendanceCard() {
+        statusCard.style.display = 'none';
+
+        statusEl.textContent = '—';
+        checkInEl.textContent = '—';
+        checkOutEl.textContent = '—';
+        remarksEl.textContent = '—';
+
+        requestedCheckIn.value = '';
+        requestedCheckOut.value = '';
+    }
+
+    async function fetchAttendance(date) {
+
+        if (!date) {
+            resetAttendanceCard();
+            return;
+        }
+
+        statusCard.style.display = 'block';
+
+        statusEl.textContent = 'Loading...';
+        checkInEl.textContent = 'Loading...';
+        checkOutEl.textContent = 'Loading...';
+        remarksEl.textContent = 'Loading...';
+
+        try {
+
+            const response = await fetch(
+                `/api/employee/attendance-status?date=${encodeURIComponent(date)}`
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.ok) {
+                throw new Error(data.message || 'Unable to fetch attendance.');
+            }
+
+            if (!data.found) {
+
+                statusEl.textContent = 'No Attendance Record';
+                checkInEl.textContent = '—';
+                checkOutEl.textContent = '—';
+                remarksEl.textContent = 'No attendance found for this date.';
+
+                requestType.value = 'Wrong Attendance';
+
+                requestedCheckIn.value = '';
+                requestedCheckOut.value = '';
+
+                return;
+            }
+
+            statusEl.textContent = data.status || 'Unknown';
+            checkInEl.textContent = data.check_in || '—';
+            checkOutEl.textContent = data.check_out || '—';
+            remarksEl.textContent = data.remarks || '—';
+
+            /*
+             * Existing attendance ko requested fields me prefill karo.
+             * Employee zarurat ke hisaab se change kar sakta hai.
+             */
+            requestedCheckIn.value = data.check_in || '';
+            requestedCheckOut.value = data.check_out || '';
+            requestedStatus.value = data.status || '';
+
+            /*
+             * Request type automatically suggest karo.
+             */
+
+            if (!data.check_in && data.check_out) {
+                requestType.value = 'Missed Check-in';
+
+            } else if (data.check_in && !data.check_out) {
+                requestType.value = 'Missed Checkout';
+
+            } else if (data.status === 'Absent') {
+                requestType.value = 'Wrong Attendance';
+
+            } else {
+                requestType.value = 'Wrong Attendance';
+            }
+
+        } catch (error) {
+
+            console.error('Attendance fetch error:', error);
+
+            statusCard.style.display = 'block';
+
+            statusEl.textContent = 'Unable to fetch';
+            checkInEl.textContent = '—';
+            checkOutEl.textContent = '—';
+            remarksEl.textContent = error.message || 'Something went wrong.';
+        }
+    }
+
+    dateInput.addEventListener('change', function () {
+        fetchAttendance(this.value);
+    });
+
+});
+</script>
+
+{% endblock %}

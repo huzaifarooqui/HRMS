@@ -1,0 +1,7 @@
+GRSJ HRMS v1.0.16
+- Termination Letter enabled in Admin > Documents.
+- Same approved clean GRSJ letterhead; golden address/contact footer remains removed.
+- Dedicated form for effective date, last working day, category, factual reason, notice/formalities, assets/handover, F&F and optional case-specific information.
+- Neutral professional wording with confidentiality, clearance and acknowledgement.
+- Preview PDF and Generate & Issue workflows.
+- Issued letter is automatically available in Employee Documents.

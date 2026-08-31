@@ -1,0 +1,65 @@
+GRSJ HRMS - FINAL PRODUCTION CHECKPOINT
+
+APPROVED ITEMS FINALIZED
+1) Performance Tracking Auto-Sync
+2) Admin + Employee sidebars stay fixed in place on desktop
+3) DigiLocker Requester verification workflow (production-ready, activates only with official credentials)
+
+PERFORMANCE TRACKING AUTOMATION
+- Koofr root: C:\Users\Lenovo\Koofr
+- Employee sources ONLY: Fazil, Harshit Kumar, Heena, Lucky
+- Ignore: Huzaifa (except exact Admin source below), SyncTrash, every unapproved folder
+- Admin exact source ONLY:
+  C:\Users\Lenovo\Koofr\Huzaifa\Master Allocation Aug'2026.xlsb
+- Excel read-only
+- Performance sheet only
+- Auto-scan continues in background
+- Duplicate visible snapshots are skipped
+- Scheduled task automatically restarts after failure
+
+ONE-TIME AUTOMATION INSTALL
+Run as Administrator:
+INSTALL_PERFORMANCE_AUTOMATION.bat
+
+DIGILOCKER
+The HRMS code is ready for official DigiLocker Requester OAuth 2.0 + PKCE.
+It will remain disabled until GRSJ is approved as a DigiLocker/API Setu Requester and receives:
+- client ID
+- client secret
+- registered callback URL
+
+Recommended registered callback:
+https://hrms.grsj.in/admin/digilocker/callback
+
+After approval, add these to Server\.env:
+DIGILOCKER_CLIENT_ID=...
+DIGILOCKER_CLIENT_SECRET=...
+DIGILOCKER_REDIRECT_URI=https://hrms.grsj.in/admin/digilocker/callback
+
+Then restart the HRMS server.
+
+Verification flow:
+Admin -> Employee -> Documents -> Verify / Import from DigiLocker
+-> employee signs in / consents on DigiLocker
+-> HRMS receives OAuth callback
+-> issued documents are shown
+-> admin selects a document
+-> HRMS downloads the issued document with Bearer authorization
+-> verifies DigiLocker response HMAC when supplied
+-> saves it with status Verified, source DigiLocker, URI and verified timestamp
+-> Done closes the verification session and revokes the token.
+
+IMPORTANT
+Never mark a manually uploaded document as DigiLocker Verified.
+Official verification activates only with valid DigiLocker-issued partner credentials and user consent.
+
+
+EMPLOYEE PERFORMANCE AUTO-DISCOVERY
+- Every active HRMS employee is checked automatically.
+- HRMS looks only at immediate folders under C:\Users\Lenovo\Koofr.
+- Folder matching priority: exact employee full name, then exact first name if unambiguous.
+- Huzaifa and SyncTrash are excluded from employee mapping.
+- When a new employee ID is created, no code update is needed:
+  create/use a same-name Koofr folder containing the latest Master Allocation workbook.
+- Employee Performance Tracking -> Refresh forces an immediate re-read of that employee's matching Koofr workbook.
+- Background automation continues scanning automatically as well.

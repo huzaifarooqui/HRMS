@@ -1,0 +1,17 @@
+GRSJ HRMS v1.0.10 - Offer Letter Revision
+
+1. Reporting To is now a dedicated individual senior-name field in the admin Offer Letter form.
+2. Previous simple compensation table replaced with Annexure - I salary-components table:
+   - Basic: 50% of monthly gross
+   - HRA: balance after Basic and statutory bonus (48.5% under current structure)
+   - Advance Monthly Statutory Bonus: 1.5%
+   - Gross Salary
+   - PF/ESIC applicability rows
+   - CTC
+   - Employee/Employer PF rows
+   - Total Deduction
+   - In Hand / Take Home
+   - Monthly and Annual columns
+3. Annexure - I is kept on its own page so the table never splits.
+4. Golden office-address/contact footer removed from Offer Letter pages.
+5. Work Location remains in the Offer Letter summary.

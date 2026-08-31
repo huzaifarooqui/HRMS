@@ -1,0 +1,21 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}GRSJ INTELLIGENCE{% endblock %}{% block heading %}HR Command Center{% endblock %}
+{% block content %}
+<section class="hero"><div><p class="eyebrow">TODAY'S HR PULSE</p><h2>One screen. Every action that matters.</h2><p class="muted">Automated insights across attendance, approvals, documents, cases and employee milestones.</p></div></section>
+<section class="metric-grid">
+<article class="metric"><div class="metric-icon blue">👥</div><div><small>Active Employees</small><b>{{active}}</b><span>Current workforce</span></div></article>
+<article class="metric"><div class="metric-icon green">✓</div><div><small>Present Today</small><b>{{today.present or 0}}</b><span>{{today.late or 0}} late · {{today.absent or 0}} absent</span></div></article>
+<article class="metric"><div class="metric-icon amber">!</div><div><small>Pending Approvals</small><b>{{pending}}</b><span>Needs HR action</span></div></article>
+<article class="metric"><div class="metric-icon violet">⚠</div><div><small>Expiring Documents</small><b>{{docs}}</b><span>Next 30 days</span></div></article>
+</section>
+<section class="content-grid">
+<article class="panel"><div class="panel-head"><div><p class="eyebrow">ACTION REQUIRED</p><h3>Employees needing attention</h3></div><a class="btn secondary small" href="{{url_for('admin_employees')}}">Open directory</a></div>
+<div class="analytics-list">{% for s in attention %}<div class="analytics-row"><div><b>{{s.employee.first_name}} {{s.employee.last_name or ''}}</b><small>{% if s.marked %}{{s.marked}} marked · {{s.on_time or 0}} on-time · {{s.late or 0}} late · {{s.half_days or 0}} half day{% else %}No attendance data{% endif %}{% if s.doc_expiring %} · document expiring{% endif %}</small></div><strong>{{s.score ~ '/100' if s.score is not none else '—'}}</strong></div>{% else %}<p class="empty">No employee insights available yet.</p>{% endfor %}</div></article>
+<article class="panel"><div class="panel-head"><div><p class="eyebrow">UPCOMING</p><h3>HR calendar</h3></div></div>
+<div class="analytics-list">{% for h in upcoming %}<div class="analytics-row"><div><b>{{h.holiday_name}}</b><small>{{h.holiday_date.strftime('%d %b %Y')}}</small></div></div>{% endfor %}{% for b in birthdays %}<div class="analytics-row"><div><b>🎂 {{b.first_name}} {{b.last_name or ''}}</b><small>Birthday · {{b.dob.strftime('%d %b')}}</small></div></div>{% endfor %}{% if not upcoming and not birthdays %}<p class="empty">No upcoming milestones.</p>{% endif %}</div></article>
+</section>
+<section class="content-grid">
+<article class="panel"><div class="panel-head"><div><p class="eyebrow">LIVE QUEUE</p><h3>Attention badges</h3></div></div><div class="quick-actions"><a class="quick-action" href="{{url_for('admin_approvals')}}"><b>✓ {{pending}}</b><span>Pending approvals</span></a><a class="quick-action" href="{{url_for('admin_hr_documents')}}"><b>⚠ {{docs}}</b><span>Documents expiring</span></a><a class="quick-action" href="{{url_for('admin_cases')}}"><b>⚠ {{open_cases}}</b><span>Open HR cases</span></a><a class="quick-action" href="{{url_for('admin_feedback')}}"><b>💬 {{feedback}}</b><span>New feedback</span></a></div></article>
+<article class="panel"><div class="panel-head"><div><p class="eyebrow">SMART TOOLS</p><h3>Quick actions</h3></div></div><div class="quick-actions"><a class="quick-action" href="{{url_for('admin_payroll')}}"><b>₹</b><span>Payroll ledger</span></a><a class="quick-action" href="{{url_for('admin_automation')}}"><b>⚙</b><span>Automation rules</span></a><a class="quick-action" href="{{url_for('admin_system_health')}}"><b>◉</b><span>System health</span></a><a class="quick-action" href="{{url_for('admin_audit_log')}}"><b>☷</b><span>Audit trail</span></a></div></article>
+</section>
+{% endblock %}

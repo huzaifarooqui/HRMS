@@ -1,0 +1,7 @@
+GRSJ HRMS v1.0.13
+- Appointment Letter enabled in Admin > Documents.
+- Uses the same approved GRSJ letterhead with the golden address/contact footer removed.
+- Dedicated appointment form with employee details, effective date, individual reporting senior, probation and work location.
+- Professional appointment clauses: duties, attendance, confidentiality, assets, conduct, document accuracy, conflicts, policies and separation.
+- Preview PDF and Generate & Issue workflows.
+- Issued Appointment Letter is automatically available in Employee Documents.

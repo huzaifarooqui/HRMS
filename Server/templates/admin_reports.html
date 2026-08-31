@@ -1,0 +1,22 @@
+{% extends 'base_admin.html' %}{% block eyebrow %}INSIGHTS & EXPORTS{% endblock %}{% block heading %}Monthly Reports{% endblock %}{% block content %}
+<section class="toolbar report-toolbar">
+<form method="get"><input type="month" name="month" value="{{month}}">
+<select name="employee_id"><option value="">All Employees</option>{% for e in all_employees %}<option value="{{e.id}}" {{'selected' if selected_employee_id|string==e.id|string else ''}}>{{e.first_name}} {{e.last_name or ''}}</option>{% endfor %}</select>
+<select name="department_id"><option value="">All Departments</option>{% for d in departments %}<option value="{{d.id}}" {{'selected' if selected_department_id|string==d.id|string else ''}}>{{d.department_name}}</option>{% endfor %}</select>
+<button class="btn primary generate-report-btn">Generate Report</button></form>
+<div class="toolbar-actions"><button class="btn ghost" onclick="window.print()">Print / Save PDF</button>
+{% if payroll_lock and payroll_lock.is_finalized %}<form method="post" action="{{url_for('admin_reports_reopen')}}" onsubmit="return confirm('Reopen finalized payroll?');"><input type="hidden" name="month" value="{{month}}"><button class="btn secondary">Reopen Payroll</button></form>
+{% else %}<form method="post" action="{{url_for('admin_reports_finalize')}}" onsubmit="return confirm('Finalize and lock payroll for {{month}}?');"><input type="hidden" name="month" value="{{month}}"><button class="btn primary">Finalize Payroll</button></form>{% endif %}</div></section>
+<section class="panel"><div class="panel-head"><div><p class="eyebrow">PAYROLL ATTENDANCE SUMMARY</p><h3>{{month}}</h3></div><small>Net Salary = (Salary ÷ Total Days) × Final Days</small></div><div class="table-wrap report-transpose-wrap"><table class="report-transpose"><thead><tr><th>Metric</th>{% for r in rows %}<th><b>{{r.employee_name}}</b><small class="block">{{r.login_id}}</small></th>{% endfor %}</tr></thead><tbody>
+<tr><th>Total Days</th>{% for r in rows %}<td>{{r.total_days}}</td>{% endfor %}</tr>
+<tr><th>Present</th>{% for r in rows %}<td>{{r.present}}</td>{% endfor %}</tr>
+<tr><th>Late</th>{% for r in rows %}<td>{{r.late}}</td>{% endfor %}</tr>
+<tr><th>Half Day</th>{% for r in rows %}<td>{{r.half_days}}</td>{% endfor %}</tr>
+<tr><th>Absent</th>{% for r in rows %}<td>{{'%.1f'|format(r.absent)}}</td>{% endfor %}</tr>
+<tr class="report-final"><th>Final Days</th>{% for r in rows %}<td>{{'%.1f'|format(r.final_days)}}</td>{% endfor %}</tr>
+<tr><th>Salary</th>{% for r in rows %}<td>₹ {{'{:,.2f}'.format(r.salary)}}</td>{% endfor %}</tr><tr><th>Per Day Salary</th>{% for r in rows %}<td>₹ {{'{:,.2f}'.format(r.per_day_salary)}}</td>{% endfor %}</tr><tr><th>Attendance Deduction</th>{% for r in rows %}<td>₹ {{'{:,.2f}'.format(r.attendance_deduction)}}</td>{% endfor %}</tr>
+<tr class="report-net"><th>Net Salary</th>{% for r in rows %}<td><b>₹ {{'{:,.2f}'.format(r.net_salary)}}</b></td>{% endfor %}</tr>
+{% if not rows %}<tr><td colspan="2" class="empty">No active employees available.</td></tr>{% endif %}
+</tbody></table></div></section>
+<section class="panel report-rule-note"><b>Late conversion used in Final Days</b><p>3 Late = 1 full-day deduction across those 3 late days; 2 Late = 1 half-day deduction across those 2 late days; any single remaining Late is counted as one attended day. Higher late counts reuse these same 3 + 2 combinations only.</p></section>
+{% endblock %}

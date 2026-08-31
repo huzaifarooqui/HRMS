@@ -1,0 +1,11 @@
+ASK GRSJ AI — Full Agent Setup
+
+The floating Ask GRSJ AI agent supports multilingual/general questions through an OpenAI-compatible API when configured.
+
+Set these environment variables before starting the server:
+OPENAI_API_KEY=your_api_key_here
+OPENAI_MODEL=gpt-5-mini
+
+If OPENAI_API_KEY is not configured, core HRMS queries still work using the built-in deterministic assistant, but general-purpose multilingual AI answers are unavailable.
+
+The key is read only from the server environment and is never stored in the database or frontend.

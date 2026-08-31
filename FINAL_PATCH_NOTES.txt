@@ -1,0 +1,11 @@
+GRSJ HRMS v1.0.2 Final Correction Patch
+
+Applied after testing:
+- Manual employee document uploads now save verification_status as Pending.
+- Custom Leave field is hidden unless Custom/Other leave type is selected; stale hidden text is cleared.
+- Employee mobile header (menu + GRSJ HRMS + employee name) is fixed at the top.
+- Home page redesigned to match the internal HRMS navy/blue theme and Workforce Management clipping fixed.
+- Genuine inactivity timeout: Employee 5 minutes, Admin 10 minutes.
+- Active typing/clicking/input sends throttled keepalive pings so long forms do not log users out mid-save.
+
+Test on game_db_test / port 5001 before production deployment.

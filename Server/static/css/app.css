@@ -1,0 +1,14 @@
+/* GRSJ HRMS CSS ENTRYPOINT — v1.0.29 modular architecture
+   Keep this file as the stable entrypoint used by all templates.
+   Add/edit styles in static/css/parts instead of stacking overrides here. */
+@import url("parts/01-core-home.css");
+@import url("parts/02-allocation-responsive.css");
+@import url("parts/03-shell-digilocker.css");
+@import url("parts/04-operations-documents.css");
+@import url("parts/05-admin-reports.css");
+@import url("parts/06-digital-id.css");
+@import url("parts/07-verification-responsive.css");
+@import url("parts/08-governance.css");
+@import url("parts/09-premium-experience.css");
+
+@import url("parts/10-final-ui-polish.css");

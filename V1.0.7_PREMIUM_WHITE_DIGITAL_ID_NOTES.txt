@@ -1,0 +1,12 @@
+GRSJ HRMS v1.0.7 - Premium White Digital ID revision
+
+Changes:
+- Fixed mirrored/reversed Flip Card rendering by removing 3D rotateY dependency and swapping real front/back faces.
+- Rebuilt front with premium executive white theme, navy typography and restrained gold branding.
+- Front clearly displays employee name, designation, employee ID, department, blood group, joining date and official status.
+- Reworked back to avoid duplicate employee name/login ID.
+- Back now displays employee address, company address, emergency contact, company contact and secure verification QR.
+- Emergency contact uses dedicated emergency fields first, with saved family/alternate contact fallbacks when needed.
+- Public QR verification still exposes only limited employment verification details, not private address/emergency contact data.
+- Downloadable 2-page PVC-size PDF updated to match the revised information hierarchy and white premium design.
+- No database migration or new dependency required.

@@ -1,0 +1,219 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+Dashboard · GRSJ HRMS
+{% endblock %}
+
+{% block heading %}
+Executive Dashboard
+{% endblock %}
+
+{% block content %}
+{% if birthdays %}
+<section class="birthday-hero" aria-label="Upcoming birthdays">
+  {% set today_birthdays = birthdays|selectattr('days_until','equalto',0)|list %}
+  <div class="birthday-icon">🎂</div>
+  <div class="birthday-copy">
+    {% if today_birthdays %}
+      <p class="eyebrow">TODAY'S BIRTHDAYS</p><h2>Happy Birthday! 🎉</h2>
+      <p>{% for p in today_birthdays %}<strong>{{p.name}}</strong>{% if p.kind=='Admin' %} <span class="birthday-role">({{p.role}})</span>{% endif %}{% if not loop.last %}, {% endif %}{% endfor %} — wishing you a wonderful day from GRSJ! ❤️</p>
+    {% else %}
+      <p class="eyebrow">UPCOMING BIRTHDAYS</p><h2>Celebrate our people 🎉</h2>
+      <p>{% for p in birthdays[:4] %}<strong>{{p.name}}</strong> <span class="birthday-days">in {{p.days_until}} day{% if p.days_until!=1 %}s{% endif %}</span>{% if not loop.last %} · {% endif %}{% endfor %}</p>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+<section class="hero">
+    <div>
+        <span class="pill">LIVE WORKFORCE OVERVIEW</span>
+        <h2>Good {{'morning' if now_hour|default(12)
+        <12 else 'day'}}, {{session.admin_name}}.</h2>
+        <p>Everything important across your organisation, at a glance.</p>
+    </div>
+    <div class="hero-stat">
+        <small>Operational status</small>
+        <b>All systems ready</b>
+        <span class="dot"></span>
+    </div>
+</section>
+<section class="metric-grid">
+    <article class="metric">
+        <div class="metric-icon blue">👥</div>
+        <div>
+            <small>Active Employees</small>
+            <b>{{counts.employees or 0}}</b>
+            <span>Team strength</span>
+        </div>
+    </article>
+    <article class="metric">
+        <div class="metric-icon green">✓</div>
+        <div>
+            <small>Present Today</small>
+            <b>{{counts.present or 0}}</b>
+            <span>Checked in</span>
+        </div>
+    </article>
+    <article class="metric">
+        <div class="metric-icon amber">◷</div>
+        <div>
+            <small>Late Today</small>
+            <b>{{counts.late or 0}}</b>
+            <span>Needs attention</span>
+        </div>
+    </article>
+    <article class="metric">
+        <div class="metric-icon violet">📝</div>
+        <div>
+            <small>Pending Leaves</small>
+            <b>{{counts.pending or 0}}</b>
+            <span>Awaiting decision</span>
+        </div>
+    </article>
+</section>
+<section class="content-grid">
+    <article class="panel span2">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">TODAY'S ACTIVITY</p>
+                <h3>Attendance feed</h3>
+            </div>
+            <a class="btn ghost small" href="{{url_for('admin_attendance')}}">View all</a>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Role</th>
+                        <th>Check in</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>{% for r in recent %}
+                    <tr>
+                        <td>
+                            <div class="person">
+                                <span class="avatar">{{r.employee_name[0]}}</span>
+                                <div>
+                                    <b>{{r.employee_name}}</b>
+                                    <small>{{r.login_id}}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{r.designation or '—'}}</td>
+                        <td>{{r.check_in.strftime('%I:%M %p') if r.check_in else '—'}}</td>
+                        <td>
+                            <span class="status {{r.status|lower|replace(' ','-')}}">{{r.status}}</span>
+                        </td>
+                    </tr>{% else %}<tr>
+                        <td colspan="4" class="empty">No attendance marked yet today.</td>
+                    </tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+    <article class="panel">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">UPCOMING</p>
+                <h3>Holidays</h3>
+            </div>
+        </div>
+        <div class="timeline">
+            {% for h in upcoming %}
+            <div>
+                <span class="date-box">
+                    <b>{{h.holiday_date.strftime('%d')}}</b>
+                    <small>{{h.holiday_date.strftime('%b')}}</small>
+                </span>
+                <div>
+                    <b>{{h.holiday_name}}</b>
+                    <small>{{h.holiday_type}}</small>
+                </div>
+            </div>{% else %}
+            <p class="empty">No upcoming holidays.</p>
+            {% endfor %}
+        </div>
+    </article>
+</section>
+
+<section class="dashboard-alert-grid">
+    <article class="panel">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">ATTENTION NEEDED</p>
+                <h3>Operational Alerts</h3>
+            </div>
+        </div>
+        <div class="alert-list">
+            <a href="{{url_for('admin_leaves')}}">
+                <b>{{alerts.pending_leaves}}</b>
+                <span>Pending leaves</span>
+            </a>
+            <a href="{{url_for('admin_attendance',exception='Missing Checkout')}}">
+                <b>{{alerts.attendance_anomalies}}</b>
+                <span>Attendance anomalies</span>
+            </a>
+            <a href="{{url_for('admin_hr_documents')}}">
+                <b>{{alerts.expiring_docs}}</b>
+                <span>Documents expiring ≤30 days</span>
+            </a>
+            <a href="{{url_for('admin_feedback',status='New')}}">
+                <b>{{alerts.feedback_new}}</b>
+                <span>New feedback</span>
+            </a>
+            <a href="{{url_for('admin_approvals')}}">
+                <b>{{alerts.pending_approvals}}</b>
+                <span>Approval actions</span>
+            </a>
+        </div>
+    </article>
+    <article class="panel">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">SYSTEM HEALTH</p>
+                <h3>Core Services</h3>
+            </div>
+            <a class="btn ghost small" href="{{url_for('admin_system_health')}}">Details</a>
+        </div>
+        <div class="health-list">
+            <div>
+                <span class="sync-dot"></span>
+                <b>Database</b>
+                <small>{{health.database}}</small>
+            </div>
+            <div>
+                <span class="sync-dot"></span>
+                <b>Performance Sync</b>
+                <small>{{'Log detected' if health.allocation_log else 'No log yet'}}</small>
+            </div>
+            <div>
+                <span class="sync-dot"></span>
+                <b>Backups</b>
+                <small>{{'Backup location ready' if health.backup_dir else 'Not initialized'}}</small>
+            </div>
+        </div>
+    </article>
+
+<section class="content-grid">
+  <article class="panel">
+    <div class="panel-head">
+      <div><p class="eyebrow">QUICK ACTIONS</p><h3>Daily operations</h3></div>
+    </div>
+    <div class="alert-list">
+      <a href="{{url_for('admin_approvals')}}"><b>✓</b><span>Review pending approvals</span></a>
+      <a href="{{url_for('admin_attendance_calendar')}}"><b>▣</b><span>Open attendance calendar</span></a>
+      <a href="{{url_for('admin_analytics')}}"><b>◒</b><span>View HR analytics</span></a>
+    </div>
+  </article>
+  <article class="panel">
+    <div class="panel-head">
+      <div><p class="eyebrow">EXECUTIVE VIEW</p><h3>One place for decisions</h3></div>
+    </div>
+    <p class="muted">Use Approval Center for workflow decisions, Attendance Calendar for day-level review, Reports for payroll, and HR Analytics for management trends.</p>
+  </article>
+</section>
+</section>
+{% endblock %}

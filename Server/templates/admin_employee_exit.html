@@ -1,0 +1,12 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}EMPLOYEE EXIT{% endblock %}{% block heading %}Exit / FNF Checklist{% endblock %}
+{% block content %}<section class="panel"><div class="panel-head"><div><p class="eyebrow">{{employee.login_id}}</p><h3>{{employee.first_name}} {{employee.last_name or ''}}</h3></div><span class="status {{employee.status|lower}}">{{employee.status}}</span></div>
+<form method="post" class="exit-checklist">
+<label><input type="checkbox" name="asset_returned" {{'checked' if checklist.asset_returned}}> Company assets returned</label>
+<label><input type="checkbox" name="handover_completed" {{'checked' if checklist.handover_completed}}> Handover completed</label>
+<label><input type="checkbox" name="documents_completed" {{'checked' if checklist.documents_completed}}> Separation documents completed</label>
+<label><input type="checkbox" name="attendance_closed" {{'checked' if checklist.attendance_closed}}> Final attendance reviewed/closed</label>
+<label>FNF Status<select name="fnf_status">{% for s in ['Pending','Under Process','On Hold','Completed'] %}<option {{'selected' if checklist.fnf_status==s}}>{{s}}</option>{% endfor %}</select></label>
+<label class="full-span">Remarks<textarea name="remarks" maxlength="500">{{checklist.remarks or ''}}</textarea></label>
+<div class="form-actions full-span"><a class="btn secondary" href="{{url_for('admin_employees')}}">Back</a><button class="btn primary">Save Checklist</button></div>
+</form></section>{% endblock %}

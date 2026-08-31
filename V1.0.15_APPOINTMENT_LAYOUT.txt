@@ -1,0 +1,5 @@
+GRSJ HRMS v1.0.15
+- Section 5 Place of Posting and Transfer moved to Page 1.
+- Remaining terms begin on Page 2.
+- Acceptance and complete signature block now use the available Page 2 space.
+- Verified final Appointment Letter is 2 pages without compressing the main body typography.

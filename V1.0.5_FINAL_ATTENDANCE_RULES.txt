@@ -1,0 +1,19 @@
+GRSJ HRMS v1.0.5 - FINAL ATTENDANCE RULES
+
+1) Sunday salary-day rule
+- Every Sunday is automatically credited as Present.
+- Sandwich exception: if BOTH Saturday and Monday are Absent, Sunday becomes Absent.
+- Auto Sunday rows are recalculated safely as adjacent attendance changes.
+- Real/manual Sunday punches are never overwritten.
+- This supports full-month salary including Sundays.
+
+2) Leave + Absent merged
+- Attendance status "Leave" is retired from the attendance register.
+- Legacy attendance Leave rows are converted to Absent.
+- XLSX "On Leave" imports as Absent.
+- Approved full-day leave creates/uses Absent attendance.
+- Approved half-day leave uses Half Day.
+- Sunday inside a leave period still follows the Sat+Mon Sunday rule.
+- Reports show Absent instead of Leave.
+
+Leave Request screens remain as the HR approval workflow; only the attendance/payroll status is merged into Absent.

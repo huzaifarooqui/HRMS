@@ -1,0 +1,10 @@
+{% extends 'base_employee.html' %}
+{% block content %}
+<header class="employee-head"><div><p class="eyebrow">UPDATES & ALERTS</p><h1>Notifications</h1><p>HR, attendance and document updates in one place.</p></div></header>
+<section class="panel"><div class="notification-list">
+{% for n in notifications %}<article class="notification-card {{'unread' if not n.is_read}}">
+<div><span class="notification-type">{{n.notification_type}}</span><b>{{n.title}}</b><small>{{n.created_at.strftime('%d %b %Y, %I:%M %p')}}</small></div>
+<p>{{n.message}}</p></article>
+{% else %}<p class="empty">No notifications yet.</p>{% endfor %}
+</div></section>
+{% endblock %}

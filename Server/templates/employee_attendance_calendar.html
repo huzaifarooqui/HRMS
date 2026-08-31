@@ -1,0 +1,35 @@
+{% extends 'base_employee.html' %}
+{% block content %}
+<header class="employee-head"><div><p class="eyebrow">MY ATTENDANCE</p><h1>Attendance Calendar</h1><p>Review your monthly attendance, working hours and exceptions.</p></div></header>
+<section class="premium-toolbar">
+  <form method="get" class="calendar-controls">
+    <label>Month<input type="month" name="month" value="{{month}}"></label>
+    <button class="btn primary" type="submit">Apply</button>
+  </form>
+</section>
+<section class="metric-grid employee-metrics calendar-summary">
+  <article class="metric"><div class="metric-icon green">✓</div><div><small>Present</small><b>{{summary.present}}</b><span>This month</span></div></article>
+  <article class="metric"><div class="metric-icon amber">◷</div><div><small>Late</small><b>{{summary.late}}</b><span>This month</span></div></article>
+  <article class="metric"><div class="metric-icon violet">½</div><div><small>Half Day</small><b>{{summary.half_day}}</b><span>This month</span></div></article>
+  <article class="metric"><div class="metric-icon blue">!</div><div><small>Absent</small><b>{{summary.absent}}</b><span>This month</span></div></article>
+</section>
+<section class="panel premium-calendar-panel">
+  <div class="panel-head"><div><p class="eyebrow">MONTHLY VIEW</p><h3>{{month}}</h3></div></div>
+  <div class="calendar-grid">
+    {% for label in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}<div class="calendar-weekday">{{label}}</div>{% endfor %}
+    {% for cell in days %}
+      {% if cell %}
+      {% set r=cell.record %}
+      <div class="calendar-day {{r.status|lower|replace(' ','-') if r else 'empty-day'}} {{'today' if cell.date==today else ''}}">
+        <div class="calendar-day-top"><b>{{cell.date.day}}</b>{% if r %}<span class="status {{r.status|lower|replace(' ','-')}}">{{r.status}}</span>{% endif %}</div>
+        {% if r %}
+          <small>{{r.check_in.strftime('%I:%M %p') if r.check_in else 'No check-in'}} → {{r.check_out.strftime('%I:%M %p') if r.check_out else 'No checkout'}}</small>
+          {% if r.working_minutes is not none %}<small>{{r.working_minutes|hm}} worked</small>{% endif %}
+          {% if r.overtime_minutes %}<small>{{r.overtime_minutes}} min overtime</small>{% endif %}
+        {% else %}<small>No attendance record</small>{% endif %}
+      </div>
+      {% else %}<div class="calendar-day blank"></div>{% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

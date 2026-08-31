@@ -1,0 +1,16 @@
+# Acceptance Checklist
+- Home page opens
+- Admin login works
+- Dashboard cards and tables load
+- Add/edit/delete employee
+- Employee profile photo uploads
+- Employee login works
+- Check-in and check-out work
+- GPS restriction works after office coordinates are saved
+- Department creation works
+- Holiday creation works
+- Employee leave application works
+- Admin approve/reject works
+- Monthly attendance and reports load
+- Settings persist
+- Mobile sidebar opens

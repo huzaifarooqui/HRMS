@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+{{ css_text|safe }}
+
+/*
+  DIGITAL ID PDF MASTER
+  ---------------------
+  PDF-only template. The live employee Digital ID page is not affected.
+
+  IMPORTANT:
+  The live desktop card is designed at 720 x 454 px. Keep that exact render
+  size here so CSS clamp(), spacing, photo size and name wrapping match the
+  website card before the renderer scales it onto the CR80 PDF page.
+
+  The selectors below intentionally have higher specificity than the
+  renderer's generic #pdfFront/#pdfBack overrides.
+*/
+
+html,
+body{
+    margin:0 !important;
+    padding:0 !important;
+    background:#fff !important;
+    overflow:hidden !important;
+}
+
+body{
+    width:1600px !important;
+    height:1100px !important;
+    display:block !important;
+}
+
+/* Keep the two capture targets separated; Playwright screenshots each card. */
+.pdf-render-root{
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:40px !important;
+    width:760px !important;
+    padding:20px !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+}
+
+/* Lock capture page to the SAME desktop card canvas used by the live UI. */
+html body #pdfFront.pdf-card-page,
+html body #pdfBack.pdf-card-page{
+    position:relative !important;
+    display:block !important;
+    width:720px !important;
+    min-width:720px !important;
+    max-width:720px !important;
+    height:454px !important;
+    min-height:454px !important;
+    max-height:454px !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    background:transparent !important;
+    box-sizing:border-box !important;
+}
+
+/*
+  Higher-specificity lock: this deliberately wins even if the Python renderer
+  injects a later 856 x 540 sizing rule.
+*/
+html body #pdfFront.pdf-card-page > .digital-id-card,
+html body #pdfBack.pdf-card-page > .digital-id-card{
+    position:relative !important;
+    width:720px !important;
+    min-width:720px !important;
+    max-width:720px !important;
+    height:454px !important;
+    min-height:454px !important;
+    max-height:454px !important;
+    aspect-ratio:1.586 / 1 !important;
+    margin:0 !important;
+    padding:0 !important;
+    transform:none !important;
+    transition:none !important;
+    animation:none !important;
+    filter:none !important;
+    cursor:default !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+}
+
+/* Render one real face per PDF page, with no 3D/mobile interference. */
+html body #pdfFront.pdf-card-page > .digital-id-card > .digital-id-face,
+html body #pdfBack.pdf-card-page > .digital-id-card > .digital-id-face{
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    box-sizing:border-box !important;
+    transform:none !important;
+    transition:none !important;
+    animation:none !important;
+    backface-visibility:visible !important;
+    -webkit-backface-visibility:visible !important;
+}
+
+html body #pdfFront.pdf-card-page > .digital-id-card > .digital-id-face[hidden],
+html body #pdfBack.pdf-card-page > .digital-id-card > .digital-id-face[hidden]{
+    display:none !important;
+}
+
+/* Prevent hover-only website effects from changing a headless PDF capture. */
+html body #pdfFront .premium-white-id:hover,
+html body #pdfBack .premium-white-id:hover{
+    transform:none !important;
+    filter:none !important;
+}
+</style>
+</head>
+<body>
+<div class="pdf-render-root">
+
+  <div class="pdf-card-page" id="pdfFront">
+    {% set show_back = false %}
+    {% include '_employee_digital_id_card.html' %}
+  </div>
+
+  <div class="pdf-card-page" id="pdfBack">
+    {% set show_back = true %}
+    {% include '_employee_digital_id_card.html' %}
+  </div>
+
+</div>
+</body>
+</html>

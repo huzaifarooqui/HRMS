@@ -1,0 +1,58 @@
+GRSJ HRMS v1.2 — Advanced Intelligence & Automation Pack
+==========================================================
+
+This build uses the supplied stable HRMS as its base and adds:
+
+1. HR Command Center
+   - Today-at-a-glance workforce pulse
+   - Pending approvals, document expiry, feedback and HR-case counters
+   - Employee attention/risk insights
+   - Upcoming HR calendar signals
+
+2. Employee 360°
+   - Unified employee profile view
+   - Attendance, leave, documents, assets, HR cases and lifecycle timeline
+   - Employee health/punctuality score
+   - Quick links to HR document generation
+
+3. Ask GRSJ
+   - Internal HRMS query assistant using live database data
+   - Supports late, absence, document expiry, approvals, milestones and employee search
+   - Queries are recorded in the audit trail
+
+4. Automation & Schedules
+   - No-code-style automation rule definitions
+   - Active rules are evaluated by the existing governance tick
+   - Notifications are throttled to avoid repetitive spam
+   - Scheduled report definitions for monthly/weekly workflows
+
+5. Payroll Ledger
+   - Attendance-based payroll snapshot
+   - Reuses GRSJ's existing late/half-day rules
+   - Explicitly excludes overtime
+   - Draft ledger is stored per employee/month
+
+6. Workforce Map
+   - Today's employees with GPS check-in coordinates are plotted
+   - Management view only; it is not a permanent location tracker
+
+7. Security hardening
+   - Security response headers
+   - Basic admin-login abuse throttle
+   - Security event logging
+   - Sensitive admin/employee pages use no-store cache policy
+
+8. Backup verification
+   - System Health now provides a one-click usable-backup check
+
+9. PWA upgrade
+   - Existing manifest retained
+   - Service worker added for safe static-asset caching and installable app shell
+
+10. Smart sidebar badges
+   - Pending/attention counts are surfaced directly in navigation
+   - Existing sidebar scroll-position preservation remains active
+
+Existing HRMS modules, attendance rules, document workflows, lifecycle/archive,
+performance tracking, approvals, notifications, audit log and digital ID remain
+intact. Overtime is intentionally not part of the new payroll ledger.

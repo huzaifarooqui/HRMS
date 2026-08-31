@@ -1,0 +1,7 @@
+GRSJ HRMS v1.0.19
+- Promotion Letter enabled in Admin > Documents.
+- Same approved GRSJ clean letterhead with golden address footer removed.
+- Current/New designation and department, effective date, individual reporting senior.
+- Optional salary revision and revised responsibilities.
+- Positive professional promotion wording, performance expectations and continuity of employment terms.
+- Preview PDF and Generate & Issue; issued copy saved in Employee Documents.

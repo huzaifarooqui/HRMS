@@ -1,0 +1,210 @@
+/* =========================================================
+   DIGITAL ID — FINAL MOBILE HEIGHT
+   ========================================================= */
+
+@media (max-width:760px){
+
+    .digital-id-card{
+        width:100% !important;
+        height:auto !important;
+        aspect-ratio:1.26 / 1 !important;
+    }
+
+}
+
+@media (max-width:430px){
+
+    .digital-id-card{
+        aspect-ratio:1.24 / 1 !important;
+    }
+
+}
+
+/* =========================================================
+   PUBLIC DIGITAL ID VERIFICATION PAGE
+   ========================================================= */
+
+.id-verify-page{
+    min-height:100vh;
+    margin:0;
+    background:
+        radial-gradient(circle at 50% 0,#244b93 0,#0c1730 48%,#071021 100%);
+    padding:28px;
+    display:grid;
+    place-items:center;
+}
+
+.id-verify-shell{
+    width:min(540px,100%);
+}
+
+.id-verify-card{
+    background:#fff;
+    border-radius:28px;
+    padding:34px;
+    text-align:center;
+    box-shadow:0 30px 70px rgba(0,0,0,.28);
+    border-top:6px solid #16a34a;
+    overflow:hidden;
+}
+
+.id-verify-card.invalid{
+    border-top-color:#dc2626;
+}
+
+.id-verify-logo{
+    display:block;
+    width:76px !important;
+    height:76px !important;
+    max-width:76px !important;
+    object-fit:contain;
+    margin:0 auto 12px;
+}
+
+.id-verify-mark{
+    width:62px;
+    height:62px;
+    margin:0 auto 14px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:#dcfce7;
+    color:#15803d;
+    font-size:32px;
+    font-weight:900;
+}
+
+.id-verify-card.invalid .id-verify-mark{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+.id-verify-card .eyebrow{
+    margin-bottom:5px;
+}
+
+.id-verify-card h1{
+    margin:2px 0 8px;
+    font-size:32px;
+    line-height:1.15;
+}
+
+.id-verify-sub{
+    margin:0;
+    color:#66758c;
+    line-height:1.5;
+}
+
+.id-verify-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    text-align:left;
+    margin:24px 0;
+}
+
+.id-verify-grid>div{
+    min-width:0;
+    background:#f6f8fc;
+    border:1px solid #e5eaf2;
+    border-radius:13px;
+    padding:13px;
+}
+
+.id-verify-grid .wide{
+    grid-column:1/-1;
+}
+
+.id-verify-grid small{
+    display:block;
+    color:#718096;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-weight:800;
+    margin-bottom:4px;
+}
+
+.id-verify-grid b{
+    display:block;
+    font-size:14px;
+    line-height:1.35;
+    overflow-wrap:anywhere;
+}
+
+.verify-status{
+    display:inline-flex !important;
+    width:auto;
+    padding:6px 11px;
+    border-radius:999px;
+    background:#dcfce7;
+    color:#15803d !important;
+}
+
+.verify-status.inactive{
+    background:#fee2e2;
+    color:#b91c1c !important;
+}
+
+.id-verify-card footer{
+    border-top:1px solid #e5eaf2;
+    padding-top:17px;
+    color:#7a879a;
+    font-size:11px;
+}
+
+
+/* ---------- MOBILE ---------- */
+
+@media(max-width:600px){
+
+    .id-verify-page{
+        padding:18px 14px;
+        align-items:center;
+    }
+
+    .id-verify-shell{
+        width:100%;
+    }
+
+    .id-verify-card{
+        width:100%;
+        box-sizing:border-box;
+        padding:25px 18px;
+        border-radius:22px;
+    }
+
+    .id-verify-logo{
+        width:68px !important;
+        height:68px !important;
+        max-width:68px !important;
+    }
+
+    .id-verify-mark{
+        width:54px;
+        height:54px;
+        font-size:27px;
+    }
+
+    .id-verify-card h1{
+        font-size:27px;
+    }
+
+    .id-verify-sub{
+        font-size:14px;
+    }
+
+    .id-verify-grid{
+        grid-template-columns:1fr;
+        gap:10px;
+        margin:20px 0;
+    }
+
+    .id-verify-grid .wide{
+        grid-column:auto;
+    }
+
+    .id-verify-grid>div{
+        padding:12px 13px;
+    }
+}

@@ -1,0 +1,36 @@
+GRSJ HRMS v1.0.6 - Premium Digital ID Card
+Date: 14 August 2026
+
+IMPLEMENTED
+- Premium responsive front/back Digital Employee ID Card.
+- Card Flip interaction for front/back viewing.
+- Dynamic company logo/name and employee data from existing HRMS database.
+- Employee photo with safe fallback.
+- Active/Inactive status badge.
+- Signed employee verification token using the existing Flask SECRET_KEY.
+- QR code generated locally using the already-installed ReportLab package (no CDN/new dependency).
+- Public verification page exposes only limited official identity/status fields.
+- QR reflects live employee status from the database at verification time.
+- Downloadable two-page PDF at standard CR80/PVC ID-card dimensions (85.60 x 53.98 mm).
+- Front PDF: branding, photo, name, designation, employee ID, department, status.
+- Back PDF: QR verification, login ID, joining date and company ownership notice.
+- Sensitive personal fields (address/Aadhaar/PAN/phone) are not exposed on public verification page.
+
+FILES UPDATED
+- Server/app.py
+- Server/static/css/app.css
+- Server/templates/employee_digital_id.html
+
+FILE ADDED
+- Server/templates/employee_id_verify.html
+
+NEW ROUTES
+- /employee/digital-id
+- /employee/digital-id/qr.svg
+- /employee/digital-id/download
+- /verify/employee/<signed-token>
+
+NOTES
+- No database schema change required.
+- No new Python package required; ReportLab already exists in requirements.txt.
+- Existing attendance, leave, performance and profile workflows were not modified.

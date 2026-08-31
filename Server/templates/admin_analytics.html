@@ -1,0 +1,36 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}MANAGEMENT INTELLIGENCE{% endblock %}
+{% block heading %}HR Analytics{% endblock %}
+{% block content %}
+<section class="premium-toolbar">
+  <form method="get" class="calendar-controls">
+    <label>Month<input type="month" name="month" value="{{month}}"></label>
+    <button class="btn primary" type="submit">Refresh</button>
+  </form>
+</section>
+<section class="metric-grid">
+  <article class="metric"><div class="metric-icon blue">◎</div><div><small>Attendance Records</small><b>{{totals.total or 0}}</b><span>Selected month</span></div></article>
+  <article class="metric"><div class="metric-icon green">✓</div><div><small>Present</small><b>{{totals.present or 0}}</b><span>On-time records</span></div></article>
+  <article class="metric"><div class="metric-icon amber">◷</div><div><small>Late</small><b>{{totals.late or 0}}</b><span>Late records</span></div></article>
+  <article class="metric"><div class="metric-icon violet">⏱</div><div><small>Overtime</small><b>{{totals.overtime_minutes or 0}} min</b><span>Total recorded</span></div></article>
+</section>
+<section class="content-grid">
+  <article class="panel">
+    <div class="panel-head"><div><p class="eyebrow">STATUS MIX</p><h3>Attendance status</h3></div></div>
+    <div class="analytics-list">
+      {% for r in status_rows %}
+      <div class="analytics-row"><div><b>{{r.status}}</b><small>{{r.total}} records</small></div><div class="analytics-bar"><span style="width: {{((r.total/(totals.total or 1))*100)|round(1)}}%"></span></div><strong>{{((r.total/(totals.total or 1))*100)|round(1)}}%</strong></div>
+      {% else %}<p class="empty">No attendance data for this month.</p>{% endfor %}
+    </div>
+  </article>
+  <article class="panel">
+    <div class="panel-head"><div><p class="eyebrow">DEPARTMENT VIEW</p><h3>Team attendance</h3></div></div>
+    <div class="analytics-list">
+      {% for r in dept_rows %}
+      <div class="analytics-row"><div><b>{{r.department_name}}</b><small>{{r.total}} records · {{r.present or 0}} present · {{r.late or 0}} late</small></div><strong>{{((r.present or 0)/(r.total or 1)*100)|round(0)}}%</strong></div>
+      {% else %}<p class="empty">No department data for this month.</p>{% endfor %}
+    </div>
+  </article>
+</section>
+<section class="panel"><div class="panel-head"><div><p class="eyebrow">MANAGEMENT NOTE</p><h3>How to use this view</h3></div></div><p class="muted">Use the calendar for individual day-level review and this analytics page for monthly trends. Existing reports remain the source for payroll and final salary calculations.</p></section>
+{% endblock %}

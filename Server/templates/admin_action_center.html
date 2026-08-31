@@ -1,0 +1,8 @@
+{% extends 'base_admin.html' %}{% block eyebrow %}OPERATIONS{% endblock %}{% block heading %}Action Center{% endblock %}{% block content %}
+<section class="metric-grid">
+<article class="metric"><div class="metric-icon blue">✓</div><div><small>My Approvals</small><b>{{approvals|length}}</b><span>Awaiting action</span></div></article>
+<article class="metric"><div class="metric-icon amber">◷</div><div><small>Attendance Requests</small><b>{{regularizations|length}}</b><span>Needs review</span></div></article>
+<article class="metric"><div class="metric-icon violet">⚠</div><div><small>Open HR Cases</small><b>{{open_cases}}</b><span>Active cases</span></div></article>
+<article class="metric"><div class="metric-icon green">↪</div><div><small>Exit Clearances</small><b>{{pending_exit}}</b><span>Pending clearance</span></div></article>
+</section>
+<section class="panel"><div class="panel-head"><h3>Approval Queue</h3><a class="btn primary small" href="{{url_for('admin_approvals')}}">Open Approval Center</a></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Request</th><th>Stage</th><th>Age</th></tr></thead><tbody>{% for r in approvals %}<tr><td>{{r.reference_no or ('#'~r.id)}}</td><td>{{r.title}}</td><td><span class="status pending">{{r.current_stage}}</span></td><td>{{r.created_at.strftime('%d %b, %I:%M %p')}}</td></tr>{% else %}<tr><td colspan="4" class="empty">Nothing pending with you.</td></tr>{% endfor %}</tbody></table></div></section>{% endblock %}

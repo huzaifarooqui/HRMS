@@ -1,0 +1,37 @@
+GRSJ HRMS v1.0.27 - Governance, PIP & Digital ID PDF Upgrade
+=============================================================
+
+1. Digital ID PDF
+- Replaced legacy ReportLab-drawn Digital ID download with browser-rendered PDF output.
+- Website and PDF now share _employee_digital_id_card.html as the master card component.
+- PDF remains two ID-sized pages: Front and Back.
+- Back side no longer includes duplicate Valid Till.
+- Requires Playwright + Chromium (already included in requirements; run `python -m playwright install chromium` once per machine/environment).
+
+2. Documents
+- Removed the duplicate top-level "Upload Employee Document" panel from Admin > Documents.
+- Employee-specific document upload remains under Admin > Employees > Employee Profile > Documents.
+- Added production-ready Performance Improvement Plan (PIP) generator and employee document delivery.
+
+3. Admin Governance / RBAC
+- Separate roles: Super Admin, Owner, Manager, HR.
+- Super Admin-only Admin Access Control screen to create, disable, re-role and reset admin accounts.
+- New Approval Center with audit trail.
+- Employee profile update flow: HR submit -> Manager approval -> Owner final approval.
+- Leave approval flow: HR submit -> Manager approval -> Owner final approval.
+- Super Admin can approve/override pending workflows.
+- Company Settings and Payroll Finalize/Reopen restricted to Owner / Super Admin.
+- Existing admin account is migrated to Super Admin automatically.
+- New admin passwords are securely hashed; legacy plaintext admin password is automatically upgraded after successful login.
+
+4. Feedback
+- Admin response becomes locked/view-only after first Save & Lock.
+- Backend also enforces the lock so editing cannot be bypassed through the UI.
+
+5. Operational Improvements
+- Dashboard alert count for approvals needing action.
+- Role label shown in admin sidebar.
+- Disabled administrator accounts are forced out on their next protected request.
+- Approval decisions and admin access changes are written to the system audit log.
+
+Database migration is automatic through schema.py on server startup.

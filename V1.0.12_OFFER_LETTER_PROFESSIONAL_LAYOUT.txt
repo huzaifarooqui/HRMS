@@ -1,0 +1,8 @@
+GRSJ HRMS v1.0.12
+- Restored professional spacious typography and line spacing from v1.0.10.
+- No forced two-page compression.
+- Page 1: Offer and position details.
+- Page 2: Annexure-I salary table followed naturally by probation/attendance sections where space permits.
+- Page 3: Remaining employment terms, acceptance and signatures.
+- Reporting To remains an individual senior-name field.
+- Clean letterhead remains without the duplicate golden office-address footer.

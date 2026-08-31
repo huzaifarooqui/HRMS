@@ -1,0 +1,175 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}EMPLOYEE RECORD{% endblock %}
+{% block heading %}{{employee.first_name}} {{employee.last_name or ''}}{% endblock %}
+{% block content %}
+<section class="profile-hero">
+    <div class="profile-avatar">
+        {% if employee.photo %}
+        <img src="{{url_for('uploaded',name=employee.photo)}}">
+        {% else %}{{employee.first_name[0]}}{% endif %}
+    </div>
+    <div>
+        <h2>{{employee.first_name}} {{employee.last_name or ''}}</h2>
+        <p>{{employee.designation or 'Employee'}} · {{employee.login_id}}</p>
+        <span class="status {{employee.status|lower}}">{{employee.status}}</span>
+    </div>
+</section>
+<section class="panel">
+    {% if pending_profile_approval %}<div class="readonly-note"><b>Approval pending:</b> This profile update is currently at <b>{{pending_profile_approval.current_stage}}</b> stage. The live employee record will change only after final Owner approval (or Super Admin override).</div>{% endif %}
+    {% if admin_role in ['Manager','Owner'] %}<div class="readonly-note"><b>Review role:</b> Profile changes are initiated by HR. Use <a href="{{url_for('admin_approvals')}}">Approval Center</a> to approve or reject pending changes.</div>{% elif admin_role=='HR' %}<div class="readonly-note"><b>Controlled change:</b> Saving this form submits the proposed update to Manager, then Owner for final approval.</div>{% endif %}
+    <form method="post" enctype="multipart/form-data" class="form-grid" data-location-form>
+        <h3 class="full-span">Personal details</h3>
+        <label>Profile photo<input type="file" name="photo" accept="image/*"></label>
+        <label>First name<input name="first_name" value="{{employee.first_name or ''}}" required></label>
+        <label>Last name<input name="last_name" value="{{employee.last_name or ''}}"></label>
+        <label>Father's name<input name="father_name" value="{{employee.father_name or ''}}"></label>
+        <label>Mother's name<input name="mother_name" value="{{employee.mother_name or ''}}"></label>
+        <label>Father's mobile number<input name="father_phone" value="{{employee.father_phone or ''}}" maxlength="15"></label>
+        <label>Mother's mobile number<input name="mother_phone" value="{{employee.mother_phone or ''}}" maxlength="15"></label>
+        <label>Date of birth<input type="date" name="dob" value="{{employee.dob or ''}}"></label>
+        <label>Gender
+            <select name="gender">
+                <option value="">Select</option>
+                {% for g in ['Male','Female','Other'] %}
+                <option {{'selected' if employee.gender==g}}>{{g}}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Blood group
+            <select name="blood_group">
+                <option value="">Select</option>
+                {% for bg in blood_groups %}
+                <option {{'selected' if employee.blood_group==bg}}>{{bg}}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <h3 class="full-span">Contact & address</h3>
+        <label>Email
+            <input type="email" name="email" value="{{employee.email or ''}}">
+        </label>
+        <label>Phone
+            <input name="phone" value="{{employee.phone or ''}}">
+        </label>
+        <label>Alternate phone
+            <input name="alternate_phone" value="{{employee.alternate_phone or ''}}">
+        </label>
+        <label>Pincode
+            <input name="pincode" data-pincode value="{{employee.pincode or ''}}" maxlength="6">
+        </label>
+        <label>State
+            <select name="state" data-state data-current="{{employee.state or ''}}">
+                <option value="">Select state</option>
+                {% for s in india_states %}
+                <option value="{{s}}" {{'selected' if employee.state==s}}>{{s}}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>District
+            <select name="district" data-district data-current="{{employee.district or ''}}">
+                <option value="{{employee.district or ''}}">{{employee.district or 'Select district'}}</option>
+                <option value="__other__">Other / Not listed</option>
+            </select>
+            <input class="location-custom" name="district_custom" placeholder="Type district" hidden>
+        </label>
+        <label>City
+            <select name="city" data-city data-current="{{employee.city or ''}}">
+                <option value="{{employee.city or ''}}">{{employee.city or 'Select city'}}</option>
+                <option value="__other__">Other / Not listed</option>
+            </select>
+            <input class="location-custom" name="city_custom" placeholder="Type city" hidden>
+        </label>
+        <label class="full-span">Address
+            <textarea name="address">{{employee.address or ''}}</textarea>
+        </label>
+        <h3 class="full-span">Employment & identity</h3>
+        <label>Aadhaar
+            <input name="aadhar" value="{{employee.aadhar or ''}}" maxlength="12">
+        </label>
+        <label>PAN
+            <input name="pan" value="{{employee.pan or ''}}" maxlength="10">
+        </label>
+        <label>Department
+            <select name="department_id">
+                <option value="">Unassigned</option>
+                {% for d in departments %}
+                <option value="{{d.id}}" {{'selected' if employee.department_id==d.id}}>{{d.department_name}}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Designation
+            <input name="designation" value="{{employee.designation or ''}}"></label>
+            <label>Joining date
+                <input type="date" name="joining_date" value="{{employee.joining_date or ''}}">
+            </label>
+            <label>Salary
+                <input type="number" step="0.01" name="salary" value="{{employee.salary or ''}}">
+            </label>
+            <label>Target
+                <input type="number" step="0.01" name="target" value="{{employee.target or ''}}">
+            </label>
+            <label>Password
+                <input name="password" value="{{employee.password or ''}}">
+            </label>
+            <label>Status<select name="status"><option {{'selected' if employee.status=='Active'}}>Active</option><option {{'selected' if employee.status=='Inactive'}}>Inactive</option></select></label>
+        <label>Employment Stage
+            <select name="employment_stage">{% for s in ['Active','On Notice','Resigned','Terminated','Archived'] %}
+                <option {{'selected' if (employee.employment_stage or 'Active')==s}}>{{s}}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Inactive / Termination Effective From
+            <input
+                type="date"
+                name="inactive_from"
+                value="{{ employee.inactive_from.isoformat() if employee.inactive_from else '' }}"
+            >
+            <small>
+                Required when Status is Inactive. Attendance stops from this date.
+            </small>
+        </label>
+        <div class="form-actions full-span">
+            <a class="btn secondary" href="{{url_for('admin_employees')}}">Back</a>
+            {% if admin_role in ['HR','Super Admin'] %}<button class="btn primary">{{'Save Complete Profile' if admin_role=='Super Admin' else 'Submit Profile Update for Approval'}}</button>{% else %}<a class="btn primary" href="{{url_for('admin_approvals')}}">Open Approval Center</a>{% endif %}
+        </div>
+    </form>
+</section>
+<section class="panel document-panel" id="documents">
+    <div class="panel-head">
+        <div>
+            <p class="eyebrow">DOCUMENTATION</p>
+            <h3>Employee Documents</h3>
+        </div>
+    </div>
+    <div class="digilocker-note">
+        <b>🔐 DigiLocker verification</b>
+        {% if digilocker_configured %}
+        <span>Official Requester integration is active. Employee consent is required for every verification session.</span>
+        <a class="btn primary" href="{{url_for('digilocker_start',eid=employee.id)}}">Verify / Import from DigiLocker</a>
+        {% else %}
+        <span>Ready for official DigiLocker Requester integration. Add the API Setu client ID, client secret and registered callback URL to production .env after partner approval.</span>
+        <span class="status pending">Awaiting Partner Credentials</span>
+        {% endif %}
+    </div>
+    <form method="post" action="{{url_for('employee_document_upload',eid=employee.id)}}" enctype="multipart/form-data" class="form-grid" style="margin-bottom:18px">
+        <label>Document Type<select name="document_type" required><option value="">Select document type</option>{% for d in employee_document_types %}<option value="{{d}}">{{d}}</option>{% endfor %}</select></label>
+        <label>Document Title<input name="title" maxlength="150" placeholder="Optional custom title"></label>
+        <label class="full-span">Document File<input type="file" name="document" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" required></label>
+        <div class="form-actions full-span"><button class="btn primary">Upload Employee Document</button></div>
+    </form>
+    <div class="document-list">{% for d in documents %}
+        <div class="document-row">
+            <span>📄</span>
+            <div><b>{{d.title}}</b>
+                <small>{{d.document_type}} · {{d.original_name}} · 
+                    <strong>{{d.verification_status or 'Uploaded'}}</strong>
+                </small>
+            </div>
+            <a target="_blank" href="{{url_for('document_uploaded',name=d.file_name)}}">View</a>
+            <form method="post" action="{{url_for('employee_document_delete',did=d.id)}}" onsubmit="return confirm('Delete this document?')">
+                <button class="icon-btn danger">⌫</button>
+            </form>
+        </div>{% else %}<p class="empty">No documents uploaded.</p>{% endfor %}
+    </div>
+</section>
+{% endblock %}

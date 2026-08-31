@@ -1,0 +1,108 @@
+GRSJ HRMS v1.0.26 - FINAL OPERATIONS UPGRADE
+
+USER-REQUESTED CHANGES
+1. Admin Employees
+   - Removed duplicate "Add Docs" action from Employees list.
+   - Employee document uploads are centralized in Admin -> Documents.
+   - Employee hard delete replaced with Archive to preserve attendance/payroll/documents.
+
+2. Admin Documents
+   - Dedicated Employee Document upload hub.
+   - Document Type list includes:
+     Aadhaar Card, PAN Card, Driving Licence, Voter ID, Passport,
+     10th/12th certificates, qualification, Resume/CV, bank/cancelled cheque,
+     address proof, police verification, previous employment documents,
+     and all HRMS-generated letters/pay slips.
+   - Issue date, expiry date, remarks, document number, version,
+     acknowledgement, verification source and lifecycle status.
+   - Delete removes the document from active employee view while preserving audit metadata.
+   - HR-generated letters remain in the same Documents module and employee Documents section.
+
+3. Attendance Priority Rules
+   - 1st date of every month -> Auto Present.
+   - Sunday -> Auto Present, except Sat + Mon both Absent -> Sunday Absent.
+   - Check-in after 10:30 AM -> Half Day.
+   - No check-in by 2:00 PM -> Company Leave; attendance storage remains Absent
+     to preserve the previously approved Leave + Absent merged reporting rule.
+   - Check-out before 4:00 PM -> Half Day.
+   - Background Attendance Rules service checks automatically every 5 minutes.
+
+4. Attendance Operations
+   - Exception filters: Late, Half Day, Absent, Missing Checkout, Manual Edited.
+   - Missing-checkout anomaly counter.
+   - Close/Reopen Attendance Month control.
+   - Existing attendance audit history retained and central audit log added.
+   - Employee is notified when admin attendance is corrected.
+
+ADDITIONAL APPROVED IMPROVEMENTS
+5. Dashboard Attention Needed
+   - Pending leaves
+   - Attendance anomalies
+   - Documents expiring within 30 days
+   - New employee feedback
+   - System health summary
+
+6. Employee Documents
+   - Existing Employee -> Documents section retained.
+   - Expiry / Expiring Soon status.
+   - Important HR documents can be acknowledged by employee.
+   - Notifications for documents, feedback, attendance edits and leave decisions.
+
+7. Feedback
+   - Existing New / Reviewed / Resolved workflow retained.
+   - Admin response now also generates an employee notification.
+
+8. Reports / Payroll
+   - Employee and Department filters.
+   - Per Day Salary and Attendance Deduction breakdown.
+   - Finalize Payroll / Reopen Payroll controls.
+   - Finalized payroll stores a database snapshot for audit protection.
+
+9. Profile / Employee Lifecycle
+   - Profile Completion percentage.
+   - Employment Stage: Active / On Notice / Resigned / Terminated / Archived.
+   - Exit / FNF checklist.
+   - Digital ID verification automatically becomes invalid for Inactive,
+     Resigned, Terminated or Archived employee records.
+
+10. Administration / Security
+   - Global employee/document search in Admin header.
+   - Central Audit Log.
+   - System Health page.
+   - Safer employee Archive instead of destructive hard-delete.
+   - Destructive actions keep confirmation prompts.
+
+11. Backup
+   - BACKUP_HRMS_NOW.bat manual backup helper.
+   - INSTALL_DAILY_BACKUP.bat schedules daily backup at 1:00 AM.
+   - Backup location: persistent HRMS data root / backups.
+   - DB SQL dump is included when mysqldump is available; uploads are always archived.
+
+ONE-TIME PRODUCTION SETUP
+A. Keep your existing production Server\.env. Do not replace it with a test .env.
+B. Start HRMS once. schema.py automatically creates the new tables/columns.
+C. Run as Administrator:
+      INSTALL_FINAL_HRMS_AUTOMATIONS.bat
+   This invokes:
+      - Performance Tracking automation
+      - Attendance Rules automation
+      - Daily Backup automation
+
+IMPORTANT ATTENDANCE NOTE
+"2 PM no check-in = Leave" and the previously approved "Leave + Absent = Absent"
+are both preserved by storing the automated record as:
+  Status: Absent
+  Remark: Auto Leave: no check-in by 2:00 PM
+So payroll/reports continue showing one combined Absent metric.
+
+TEST CHECKLIST
+- Admin -> Employees: no Add Docs button; Archive + Exit/FNF available.
+- Admin -> Documents: KYC/record upload + HR letter generator both present.
+- Employee -> Documents: uploaded/issued docs visible and acknowledgement works.
+- Admin -> Attendance: exception filter and month close/reopen.
+- Test check-in after 10:30 -> Half Day.
+- Test checkout before 4:00 PM -> Half Day.
+- Verify 1st day / Sunday auto rules in test DB where possible.
+- Admin -> Reports: filters, deduction breakdown, payroll finalize.
+- Admin Dashboard: Attention Needed and System Health cards.
+- Employee -> Notifications and Profile Completion.

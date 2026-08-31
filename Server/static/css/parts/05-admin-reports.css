@@ -1,0 +1,134 @@
+/* =========================================================
+   ACTIVE EMPLOYEE DOCUMENTS - FINAL TABLE POLISH
+   ========================================================= */
+
+.document-register-table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    table-layout:auto;
+}
+
+.document-register-table th{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.4px;
+    color:#62708a;
+    text-transform:uppercase;
+    white-space:nowrap;
+    padding:14px 16px;
+}
+
+.document-register-table td{
+    padding:16px;
+    vertical-align:middle;
+    line-height:1.35;
+}
+
+.document-register-table td:nth-child(1){
+    min-width:180px;
+}
+
+.document-register-table td:nth-child(2){
+    min-width:140px;
+}
+
+.document-register-table td:nth-child(3){
+    min-width:145px;
+}
+
+.document-register-table td:nth-child(4){
+    min-width:125px;
+}
+
+.document-register-table td:nth-child(5){
+    min-width:135px;
+}
+
+.document-register-table td:nth-child(6){
+    min-width:120px;
+}
+
+.document-register-table td:nth-child(7),
+.document-register-table td:nth-child(8){
+    min-width:75px;
+    text-align:center;
+}
+
+.document-register-table tbody tr{
+    transition:.18s ease;
+}
+
+.document-register-table tbody tr:hover{
+    background:#f8faff;
+}
+
+.document-register-table code{
+    font-size:12px;
+    white-space:nowrap;
+}
+
+.document-register-table .block{
+    display:block;
+    margin-top:4px;
+    color:#718096;
+    font-size:12px;
+}
+
+.document-register-table .table-action{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:32px;
+    padding:6px 10px;
+    border-radius:8px;
+    font-weight:700;
+    text-decoration:none;
+}
+
+.document-register-table .danger-action{
+    border:1px solid #efc8c8;
+    background:#fff7f7;
+    color:#b42318;
+    cursor:pointer;
+}
+
+@media(max-width:1100px){
+    .document-register-wrap{
+        overflow-x:auto;
+    }
+
+    .document-register-table{
+        min-width:1050px;
+    }
+}
+
+.hr-doc-generator + .panel .danger-action{
+  border:0;background:transparent;color:#b42318;font:inherit;font-weight:700;
+  cursor:pointer;padding:0;text-decoration:none;
+}
+.hr-doc-generator + .panel .danger-action:hover{text-decoration:underline}
+.hr-doc-generator + .panel td form{margin:0}
+/* Generate Report CTA */
+.generate-report-btn{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:#fff;
+    border:0;
+    padding:12px 22px;
+    border-radius:12px;
+    font-weight:800;
+    font-size:14px;
+    box-shadow:0 8px 20px rgba(37,99,235,.22);
+    cursor:pointer;
+    transition:.18s ease;
+}
+
+.generate-report-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 10px 24px rgba(37,99,235,.30);
+}
+
+.generate-report-btn:active{
+    transform:translateY(0);
+}
+

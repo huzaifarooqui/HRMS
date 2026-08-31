@@ -1,0 +1,6 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}SECURITY & ACCOUNTABILITY{% endblock %}{% block heading %}Audit Log{% endblock %}
+{% block content %}<section class="panel"><div class="panel-head"><div><p class="eyebrow">RECENT ADMIN ACTIVITY</p><h3>System Audit Trail</h3></div><small>Latest 500 events</small></div>
+<div class="table-wrap"><table><thead><tr><th>Time</th><th>Admin</th><th>Action</th><th>Entity</th><th>Employee</th><th>Details</th></tr></thead><tbody>
+{% for r in audit_rows %}<tr><td>{{r.created_at.strftime('%d %b %Y, %I:%M %p')}}</td><td>{{r.admin_name or 'System'}}</td><td><code>{{r.action}}</code></td><td>{{r.entity_type}} {{r.entity_id or ''}}</td><td>{{r.employee_name or '—'}}</td><td><small>{{r.details or '—'}}</small></td></tr>
+{% else %}<tr><td colspan="6" class="empty">No audit events yet.</td></tr>{% endfor %}</tbody></table></div></section>{% endblock %}

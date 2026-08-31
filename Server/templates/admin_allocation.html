@@ -1,0 +1,14 @@
+{% extends 'base_admin.html' %}
+{% block title %}Performance · Admin · GRSJ HRMS{% endblock %}
+{% block eyebrow %}WORKFORCE ALLOCATION{% endblock %}
+{% block heading %}Performance{% endblock %}
+{% block top_actions %}
+<form method="post" action="{{url_for('admin_allocation_refresh')}}" class="performance-refresh-form">
+  <button class="btn primary performance-refresh-btn" type="submit" onclick="this.disabled=true;this.innerHTML='↻ Refreshing...';this.form.submit();">↻ Refresh</button>
+</form>
+{% endblock %}
+{% block content %}
+{% if snapshot %}<section class="allocation-status"><div><small>SYNC STATUS</small><b><span class="sync-dot"></span> Up to date</b></div><div><small>LAST UPDATED</small><b>{{snapshot.imported_at.strftime('%d %b %Y, %I:%M %p') if snapshot.imported_at else '—'}}</b></div><div><small>SOURCE</small><b>{{snapshot.source_file}}</b></div></section>
+{% for table in tables %}<section class="panel allocation-panel admin-allocation-block"><div class="panel-head"><div><p class="eyebrow">PIVOT TABLE {{table.display_index}}</p><h3>{{table.display_title}}</h3></div><small class="allocation-note">Read-only · Auto-synced</small></div><div class="table-wrap allocation-table-wrap"><table class="allocation-table"><thead><tr>{% for h in table.headers %}<th>{{h}}</th>{% endfor %}</tr></thead><tbody>{% for item in table.display_rows %}{% set row=item.cells %}{% if item.is_total %}<tr class="allocation-total-row"><td colspan="{{2 if table.headers|length > 1 else 1}}" class="allocation-total-label">{{item.total_label}}</td>{% for cell in row[2:] %}<td>{{cell if cell not in [None,''] else '—'}}</td>{% endfor %}</tr>{% else %}<tr>{% if item.show_ro %}<td rowspan="{{item.rowspan}}" class="allocation-manager-cell">{{row[0]}}</td>{% endif %}{% for cell in row[1:] %}<td>{{cell if cell not in [None,''] else '—'}}</td>{% endfor %}</tr>{% endif %}{% endfor %}</tbody></table></div></section>{% endfor %}
+{% else %}<section class="panel allocation-empty"><div class="empty-state-icon">▦</div><h2>Admin Performance is syncing</h2><p>The exact Huzaifa Master Allocation workbook has not produced a successful snapshot yet.</p></section>{% endif %}
+{% endblock %}

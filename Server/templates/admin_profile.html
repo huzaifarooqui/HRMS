@@ -1,0 +1,25 @@
+{% extends 'base_admin.html' %}
+{% block title %}My Profile · GRSJ HRMS{% endblock %}
+{% block eyebrow %}ACCOUNT & ACCESS{% endblock %}
+{% block heading %}My Profile{% endblock %}
+{% block content %}
+<section class="admin-profile-card">
+  <div class="admin-profile-identity">
+    <div class="admin-profile-avatar">{{(admin.full_name or admin.username or 'A')[0]|upper}}</div>
+    <div>
+      <span class="pill">SYSTEM ADMINISTRATOR</span>
+      <h2>{{admin.full_name or 'System Administrator'}}</h2>
+      <p>Primary administrator account for GRSJ HRMS.</p>
+    </div>
+  </div>
+  <div class="details-grid admin-profile-details">
+    <div><small>Full name</small><b>{{admin.full_name or 'System Administrator'}}</b></div>
+    <div><small>Username</small><b>{{admin.username}}</b></div>
+    <div><small>Account role</small><b>System Administrator</b></div>
+    <div><small>Date of Birth</small><b>{{admin.dob.strftime('%d %b %Y') if admin.dob else 'Not set'}}</b></div><div><small>Account status</small><b><span class="status active">Active</span></b></div>
+    <div><small>Account created</small><b>{{admin.created_at.strftime('%d %b %Y, %I:%M %p') if admin.created_at else '—'}}</b></div>
+    <div><small>Last login</small><b>{{admin.last_login.strftime('%d %b %Y, %I:%M %p') if admin.last_login else 'First session'}}</b></div>
+  </div>
+  <div class="readonly-note">🔒 Administrator account details are protected. Settings and workforce controls remain available from the sidebar.</div>
+</section>
+{% endblock %}

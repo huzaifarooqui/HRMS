@@ -1,0 +1,31 @@
+GRSJ HRMS FINAL V6 FEATURE PACK
+
+1. Employee Feedback
+- Feedback is the last Employee sidebar item.
+- Employee can submit and view own history/admin response.
+- Admin Feedback section lists all submissions and supports status/reply.
+
+2. Attendance Filter
+- Admin Attendance now has Filter button for one employee + month.
+
+3. Home Page
+- Admin Console renamed to Admin Login.
+
+4. Digital ID Card
+- Button added below the top My Profile identity card.
+- View/Download page scaffold is ready.
+- Final card design/PDF intentionally remains disabled until approved template is supplied in the separate design chat.
+
+5-6. Reports
+- Report is transposed: metrics vertically on left, employees horizontally.
+- Metrics: Total Days, Present, Late, Half Day, Leave, Final Days, Salary, Net Salary.
+- Total Days = actual calendar days in selected month.
+- Final Days late logic: combinations of 3 Late => 2 credited days, 2 Late => 1.5 credited days, 1 remaining Late => 1 credited day.
+- Explicit Half Day = 0.5 credited day. Leave = 0 credited day. Holiday attendance status = 1 credited day.
+- Net Salary = (Salary / Total Days) * Final Days.
+
+7. Admin Documents
+- New Documents menu immediately below Attendance.
+- Document Type -> Employee -> auto employee details -> date/reference/notes -> Generate.
+- Generate currently records an Awaiting Template request only.
+- It does NOT invent letter formats. Final PDF generation activates after each approved company template is supplied.

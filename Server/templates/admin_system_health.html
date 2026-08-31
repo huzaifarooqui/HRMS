@@ -1,0 +1,7 @@
+{% extends 'base_admin.html' %}
+{% block eyebrow %}OPERATIONS{% endblock %}{% block heading %}System Health{% endblock %}
+{% block content %}<section class="health-grid">
+<article class="panel health-card"><span class="sync-dot"></span><div><small>DATABASE</small><h3>{{health.db}}</h3><p>Application database connection is available.</p></div></article>
+<article class="panel health-card"><span class="sync-dot"></span><div><small>PERFORMANCE SYNC</small><h3>{{'Log Active' if health.allocation_log_exists else 'No Log Yet'}}</h3><p>{% if health.allocation_log_modified %}Last log change: {{health.allocation_log_modified.strftime('%d %b %Y, %I:%M %p')}}{% else %}Start the Performance automation to initialize its log.{% endif %}</p></div></article>
+<article class="panel health-card"><span class="sync-dot"></span><div><small>BACKUP</small><h3>{{'Backup Location Ready' if health.backup_exists else 'Not Initialized'}}</h3><p>{{health.backup_root}}</p></div></article>
+</section><section class="panel"><div class="panel-head"><div><p class="eyebrow">RECOVERY</p><h3>Backup verification</h3></div><form method="post" action="{{url_for('verify_backup')}}"><button class="btn primary">Verify Latest Backup</button></form></div><p class="readonly-note">System Health intentionally shows operational status only. Passwords, database credentials and sensitive configuration are never displayed here.</p></section>{% endblock %}

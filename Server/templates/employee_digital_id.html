@@ -1,0 +1,108 @@
+{% extends 'base_employee.html' %}
+{% block title %}Digital ID Card · GRSJ HRMS{% endblock %}
+{% block content %}
+<header class="employee-head digital-id-head">
+  <div><p class="eyebrow">EMPLOYEE IDENTITY</p><h1>Digital ID Card</h1><p>Your official GRSJ employee identity card with secure live verification.</p></div>
+  <div class="digital-id-head-actions"><button class="btn secondary" type="button" id="flipIdCard">↻ Flip Card</button><a class="btn primary" href="{{url_for('employee_digital_id_download')}}">↓ Download PDF</a></div>
+</header>
+
+{% set employee_address = ((employee.address or '') ~ (', ' if employee.address and (employee.city or employee.district or employee.state or employee.pincode) else '') ~ (employee.city or '') ~ (', ' if employee.city and (employee.district or employee.state or employee.pincode) else '') ~ (employee.district or '') ~ (', ' if employee.district and (employee.state or employee.pincode) else '') ~ (employee.state or '') ~ (' - ' if employee.state and employee.pincode else '') ~ (employee.pincode or '')) %}
+{% set emergency_name = employee.emergency_contact_name or employee.father_name or employee.mother_name or 'Not configured' %}
+{% set emergency_phone = employee.emergency_contact_phone or employee.father_phone or employee.mother_phone or employee.alternate_phone or 'Not configured' %}
+
+<section class="digital-id-workspace">
+  <div class="digital-id-stage">
+    {% set interactive_card = true %}
+    {% set show_back = false %}
+    {% include '_employee_digital_id_card.html' %}
+  </div>
+  <div class="digital-id-note"><span>✓</span><div><b>Live HRMS Identity</b><p>The QR verifies the employee's current official status. Private address and emergency-contact information remain on the card only and are not exposed on the public QR verification page.</p></div></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(()=>{
+  const card  = document.getElementById('digitalIdCard');
+  const front = document.getElementById('idFront');
+  const back  = document.getElementById('idBack');
+  const btn   = document.getElementById('flipIdCard');
+
+  if(!card || !front || !back || !btn) return;
+
+  let showingBack = false;
+  let flipping = false;
+
+  front.hidden = false;
+  back.hidden = true;
+
+  async function flipCard(){
+    if(flipping) return;
+    flipping = true;
+
+    const direction = showingBack ? -1 : 1;
+
+    /* First half — turn card edge-on */
+    const outAnim = card.animate(
+      [
+        {
+          transform:
+            'perspective(1400px) rotateY(0deg) scale(1)'
+        },
+        {
+          transform:
+            `perspective(1400px) rotateY(${90 * direction}deg) scale(.97)`
+        }
+      ],
+      {
+        duration:300,
+        easing:'cubic-bezier(.55,.05,.67,.19)',
+        fill:'forwards'
+      }
+    );
+
+    await outAnim.finished;
+
+    /* Swap the actual card face at the invisible edge */
+    showingBack = !showingBack;
+
+    front.hidden = showingBack;
+    back.hidden = !showingBack;
+
+    outAnim.cancel();
+
+    /* Second half — rotate new face into view */
+    const inAnim = card.animate(
+      [
+        {
+          transform:
+            `perspective(1400px) rotateY(${-90 * direction}deg) scale(.97)`
+        },
+        {
+          transform:
+            'perspective(1400px) rotateY(0deg) scale(1)'
+        }
+      ],
+      {
+        duration:340,
+        easing:'cubic-bezier(.22,.61,.36,1)',
+        fill:'forwards'
+      }
+    );
+
+    await inAnim.finished;
+
+    inAnim.cancel();
+    card.style.transform = '';
+    flipping = false;
+  }
+
+  btn.addEventListener('click', flipCard);
+
+  card.addEventListener('click', e=>{
+    if(e.target.closest('a,button')) return;
+    flipCard();
+  });
+})();
+</script>
+{% endblock %}

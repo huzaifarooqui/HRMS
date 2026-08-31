@@ -1,0 +1,17 @@
+FINAL V2 PATCH
+
+1. Performance Tracking automation
+   - Existing final automation remains.
+   - New ACTIVATE_PERFORMANCE_AUTOMATION_NOW.bat performs:
+     requirements install -> one-time sync -> scheduled-task install -> task check.
+   - Run once as Administrator after confirming Server\.env uses DB_NAME=game_db.
+
+2. Sidebar
+   - Admin sidebar is now position:fixed on desktop.
+   - Employee sidebar is now position:fixed on desktop.
+   - Main content receives matching left margin.
+   - Page scroll no longer moves the sidebar.
+   - Navigation list can scroll inside the fixed sidebar if necessary.
+
+3. DigiLocker
+   - Code remains included but no action is required until official credentials are obtained.

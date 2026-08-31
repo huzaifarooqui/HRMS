@@ -1,0 +1,8 @@
+GRSJ HRMS Allocation V4.8
+
+Admin Allocation:
+- Display order remains source Pivot 3, Pivot 2, Pivot 1.
+- Visible labels remain Pivot 1, Pivot 2, Pivot 3.
+- DRR virtual column is now detected/read for ALL THREE admin Performance Pivot Tables.
+- DRR is read from the visible adjacent Performance-sheet column; HRMS does not recalculate it.
+- Existing approved Manager merge, Total/Grand Total, alignment and layouts remain unchanged.
