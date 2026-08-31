@@ -1,4 +1,4 @@
-# GAME HRMS Professional v1.0 RC1
+# GRSJ HRMS Professional v1.0 RC1
 
 Ready-to-run professional HRMS for Guru Ram Singh Ji Associates.
 
